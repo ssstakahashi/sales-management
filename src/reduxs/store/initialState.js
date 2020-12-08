@@ -1,8 +1,13 @@
 const initialState = {
   sales : {
-    createAt: new Date(),
-    amount  : 1111,
-    proName : 22222,
+    createAt     : new Date(),
+    updateAt     : new Date(),
+    salesDay     : "",
+    customerName : "",
+    amount       : "",
+    // proId     : salesData.proId,
+    proName      : "",
+    userId       : "",
   }
 }
 

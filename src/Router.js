@@ -1,5 +1,5 @@
 import { Route, Switch } from 'react-router';
-import { Home, Sales } from './components/views'
+import { Sales, Home} from './views';
 
 function Router() {
   return (
