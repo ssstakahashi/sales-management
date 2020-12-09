@@ -49,7 +49,7 @@ export const signIn = (email, password) => {
                     dispatch(push('/'))
                 })
             }).catch(() => {
-                dispatch(hideLoadingAction());
+                // dispatch(hideLoadingAction());
             });
     }
 };

@@ -7,7 +7,7 @@ import Router from './Router';
 function App() {
   const dispatch = useDispatch();
   const selecter = useSelector(state => state);
-  const ver = "0.0.4"
+  const ver = "0.0.5"
 
   console.log(selecter)
   return (

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { push } from 'connected-react-router'
 import { supplierInputOperation } from '../../reducks/supplier/operations';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,8 +14,6 @@ const Supplier = () => {
   const onChangeSet = useCallback((e) => {
       setState({...state, [e.target.name] : e.target.value })
     },[state])
-
-    console.log(state)
 
   return (
     <form className={classes.root} autoComplete="off">
@@ -38,8 +36,11 @@ const Supplier = () => {
           onChange={onChangeSet}
         />
       </div>
-      <button onClick={()=> dispatch(supplierInputOperation(state))}>
+      <button onClick={()=>dispatch(supplierInputOperation(state))}>
         登録
+      </button>
+      <button onClick={()=>dispatch(push('/'))}>
+        戻る
       </button>
     </form>
   )

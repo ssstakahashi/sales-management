@@ -7,13 +7,15 @@ const Home = () => {
   const dispatch = useDispatch();
   const selector = useSelector( state => state);
   const [ state, setState ] = useState({...selector});
+  console.log(state)
   return (
     <div>
       MHome
       <p>proName: {state.sales.proName}</p>
       <p>proName: {state.sales.amount}</p>
-      {/* <p>proName: {state.supplier.supplierName}</p>
-      <p>proName: {state.supplier.supplierId}</p> */}
+      <p>proName: {state.supplier.supplierName}</p>
+      <p>proName: {state.supplier.supplierId}</p>
+      {/* <p>proName: {state.supplier.createAt.toDate()}</p> */}
       <button onClick={()=>dispatch(push('/sales'))}>
       　売上登録
     　</button>

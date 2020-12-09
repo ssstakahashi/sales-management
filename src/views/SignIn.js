@@ -2,10 +2,8 @@ import React, {useState, useCallback} from 'react';
 import { PrimaryButton, TextInput } from "../components/uikit";
 import { useDispatch } from "react-redux";
 import { signIn } from "../reducks/users/operations";
-import { push } from "connected-react-router";
-import '../layout/Layout.module.css'
+// import { push } from "connected-react-router";
 import { makeStyles } from "@material-ui/styles";
-import { createStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
         csectioncontainer: {

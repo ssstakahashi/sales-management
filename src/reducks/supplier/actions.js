@@ -9,7 +9,7 @@ export function SupplierInputAction(supplierData) {
       supplierName     : supplierData.supplierName,
       supplierAddress  : supplierData.supplierAddress,
       supplierId       : supplierData.supplierId,
-      supplierPhone    : supplierData.proName,
+      supplierPhone    : supplierData.supplierPhone,
       supplierMobile   : supplierData.supplierMobile,
       supplierInCharge : supplierData.supplierInCharge,
     }

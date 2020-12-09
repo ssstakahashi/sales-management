@@ -39,6 +39,9 @@ const Sales = () => {
       <button onClick={()=>dispatch(salesInputOperation(state))}>
         登録
       </button>
+      <button onClick={()=>dispatch(push('/'))}>
+        戻る
+      </button>
     </form>
   )
 
