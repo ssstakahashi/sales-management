@@ -15,12 +15,14 @@ export const supplierInputOperation = ( data ) => {
 
     dispatch( SupplierInputAction({
       ...state,
-      createAt         : new Date(),
-      updateAt         : data.updateAt,
+      createAt         : data.createAt ? data.createAt : new Date(),
+      updateAt         : new Date(),
       supplierName     : data.supplierName,
       supplierAddress  : data.supplierAddress,
+      supplierPostCode : data.supplierPostCode,
       supplierId       : data.supplierId,
       supplierPhone    : data.supplierPhone,
+      supplierEmail    : data.supplierEmail,
       supplierMobile   : data.supplierMobile,
       supplierInCharge : data.supplierInCharge,
     }))
