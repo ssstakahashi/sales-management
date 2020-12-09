@@ -1,15 +1,15 @@
-import './App.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { SalesInputAction } from './reduxs/sales/actions';
+import Layout from './layout/Layout'
+
 // import { Router } from 'react-router';
 import Router from './Router';
 
 function App() {
   const dispatch = useDispatch();
   const selecter = useSelector(state => state);
-  const ver = "0.0.3"
+  const ver = "0.0.4"
 
-  console.log(selecter.sales)
+  console.log(selecter)
   return (
     // <div className="App">
     //   <header className="App-header">
@@ -21,7 +21,9 @@ function App() {
     //   </header>
     // </div>
     <main>
-      <Router />
+      <Layout>
+        <Router />
+      </Layout>
     </main>
   );
 }

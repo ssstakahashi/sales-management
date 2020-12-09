@@ -1,11 +1,11 @@
 import React from 'react';
-import Header from '../header/Header';
-import Style from './Layout.module.scss';
+// import Header from '../header/Header';
+import Style from './Layout.module.css';
 
 const Layout = ({children}) => {
     return (
         <div className={Style.wrapper}>
-            <Header />
+            {/* <Header /> */}
             <div className={Style.main}>
             {children}
             </div>

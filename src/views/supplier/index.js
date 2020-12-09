@@ -1,42 +1,44 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from 'connected-react-router'
-import { salesInputOperation } from '../reduxs/sales/operations';
+
+import { supplierInputOperation } from '../../reducks/supplier/operations';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 
-const Sales = () => {
+const Supplier = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const selector = useSelector( state => state);
-  const [ state, setState ] = useState({...selector.sales});
+  const [ state, setState ] = useState({...selector.supplier});
 
   const onChangeSet = useCallback((e) => {
       setState({...state, [e.target.name] : e.target.value })
     },[state])
+
+    console.log(state)
 
   return (
     <form className={classes.root} autoComplete="off">
       <div>
         <TextField required label="Required" defaultValue="Hello World" />
         <TextField
-          value={state.proName}
+          value={state.supplierName}
           label="取引先"
-          name="proName"
+          name="supplierName"
           onChange={onChangeSet}
         />
         <TextField
           label="金額"
           type="number"
-          name="amount"
-          value={state.amount}
+          name="supplierId"
+          value={state.supplierId}
           InputLabelProps={{
             shrink: true,
           }}
           onChange={onChangeSet}
         />
       </div>
-      <button onClick={()=>dispatch(salesInputOperation(state))}>
+      <button onClick={()=> dispatch(supplierInputOperation(state))}>
         登録
       </button>
     </form>
@@ -53,4 +55,4 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default Sales;
+export default Supplier;

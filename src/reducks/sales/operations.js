@@ -4,6 +4,7 @@ import { push } from 'connected-react-router';
 export const salesInputOperation = ( data ) => {
   return async( dispatch, getState ) => {
     const state = getState()
+    console.log(state)
 
     dispatch(SalesInputAction({
       ...state,
