@@ -20,9 +20,9 @@ export const signIn = (email, password) => {
         //     return false
         // }
         return auth.signInWithEmailAndPassword(email, password)
-            .then(result => {
+            .then( result => {
                 const userState = result.user
-                // if (!userState) {
+                // if (userState) {
                 //     dispatch(hideLoadingAction());
                 //     throw new Error('ユーザーIDを取得できません');
                 // }
@@ -51,5 +51,35 @@ export const signIn = (email, password) => {
             }).catch(() => {
                 // dispatch(hideLoadingAction());
             });
+    }
+};
+
+export const listenAuthState = () => {
+    return async (dispatch) => {
+        return auth.onAuthStateChanged(user => {
+            if (user) {
+                usersRef.doc(user.uid).get()
+                    .then(snapshot => {
+                        const data = snapshot.data()
+                        console.log(data)
+                        if (!data) {
+                            throw new Error('ユーザーデータが存在しません。')
+                        }
+
+                        // Update logged in user state
+                        dispatch(signInAction({
+                            customer_id: (data.customer_id) ? data.customer_id : "",
+                            email: data.email,
+                            isSignedIn: true,
+                            payment_method_id: (data.payment_method_id) ? data.payment_method_id : "",
+                            role: data.role,
+                            uid: user.uid,
+                            username: data.username,
+                        }))
+                    })
+            } else {
+                dispatch(push('/signin'))
+            }
+        })
     }
 };

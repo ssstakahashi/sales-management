@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     }
 })
 
-const TextInput = (props) => {
+const TextInput = React.memo((props) => {
     const classes = useStyles();
     const textStyle = props.fullWidth ? classes.full : classes.half;
 
@@ -29,10 +29,12 @@ const TextInput = (props) => {
             required={props.required}
             rows={props.rows}
             value={props.value}
+            name={props.name}
+            autoComplete={props.autoComplete}
             type={props.type}
             onChange={props.onChange}
         />
     );
-};
+});
 
 export default TextInput;

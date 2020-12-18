@@ -4,10 +4,7 @@ import initialState from '../store/initialState';
 export function SalesReducer(state = initialState.sales, action) {
   switch (action.type) {
     case Actions.SALES_INPUT:
-      return {
-        ...state,
-        ...action.payload
-      }
+      return action.payload.sales
     default:
       return state;
   }

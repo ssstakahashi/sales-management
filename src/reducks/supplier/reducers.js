@@ -5,7 +5,6 @@ export function SupplierReducer(state = initialState.supplier, action) {
   switch (action.type) {
     case Actions.SUPPLIER_INPUT:
       return {
-        ...state,
         ...action.payload
       }
     default:

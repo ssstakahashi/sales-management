@@ -1,7 +1,7 @@
 import React, {useState, useCallback} from 'react';
-import { PrimaryButton, TextInput } from "../components/uikit";
+import { MainButton, TextInput } from "../../components/uikit";
 import { useDispatch } from "react-redux";
-import { signIn } from "../reducks/users/operations";
+import { signIn } from "../../reducks/users/operations";
 // import { push } from "connected-react-router";
 import { makeStyles } from "@material-ui/styles";
 
@@ -59,7 +59,7 @@ const SignIn = () => {
             />
             <div className={classes.modulespacermedium} />
             <div className={classes.center}>
-                <PrimaryButton label={"ログイン"} onClick={() => dispatch(signIn(email, password))} />
+                <MainButton label={"ログイン"} color="primaryButton" onClick={() => dispatch(signIn(email, password))} />
                 {/* <div className="module-spacer--small" />
                 <p className="u-text-small" onClick={() => dispatch(push('/signin/reset'))}>パスワードを忘れた方はこちら</p>
                 <p className="u-text-small" onClick={() => dispatch(push('/signup'))}>アカウント登録がまだですか？</p> */}

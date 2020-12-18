@@ -1,21 +1,23 @@
-import React,{ useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { push } from 'connected-react-router'
+import { supplierDataGetOperation } from '../reducks/supplier/operations';
 
 const Home = () => {
   const dispatch = useDispatch();
   const selector = useSelector( state => state);
   const [ state, setState ] = useState({...selector});
-  console.log(state)
+  console.log(selector)
+  
+  useEffect(()=>{
+    dispatch( supplierDataGetOperation() )
+  },[])
+
   return (
     <div>
-      MHome
-      <p>proName: {state.sales.proName}</p>
-      <p>proName: {state.sales.amount}</p>
-      <p>proName: {state.supplier.supplierName}</p>
-      <p>proName: {state.supplier.supplierId}</p>
-      {/* <p>proName: {state.supplier.createAt.toDate()}</p> */}
+      Home
+
       <button onClick={()=>dispatch(push('/sales'))}>
       　売上登録
     　</button>
