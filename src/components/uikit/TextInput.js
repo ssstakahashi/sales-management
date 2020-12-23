@@ -10,29 +10,41 @@ const useStyles = makeStyles({
         marginLeft: 8,
         marginRight: 8,
         marginBottom: 16,
-        minWidth: 130,
-        width: 'calc(50% - 16px)'
+        minWidth: 100,
+        width: 'calc(10% - 16px)'
     }
 })
 
-const TextInput = React.memo((props) => {
+const TextInput = React.memo(({
+    fullWidth = true,
+    label, multiline = false,
+    required = false,
+    rows = 1,
+    value,
+    name,
+    autoComplete = "off",
+    type ="text",
+    onChange,
+    variant
+}) => {
     const classes = useStyles();
-    const textStyle = props.fullWidth ? classes.full : classes.half;
+    const textStyle = fullWidth ? classes.full : classes.half;
 
     return (
         <TextField
             className={textStyle}
-            fullWidth={props.fullWidth}
-            label={props.label}
+            fullWidth={fullWidth}
+            label={label}
             margin="dense"
-            multiline={props.multiline}
-            required={props.required}
-            rows={props.rows}
-            value={props.value}
-            name={props.name}
-            autoComplete={props.autoComplete}
-            type={props.type}
-            onChange={props.onChange}
+            multiline={multiline}
+            required={required}
+            rows={rows}
+            value={value}
+            name={name}
+            autoComplete={autoComplete}
+            type={type}
+            onChange={onChange}
+            variant={variant}
         />
     );
 });

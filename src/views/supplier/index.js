@@ -10,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { supplierDataGetOperation, supplierDialogCloseOperation, supplierDialogOpenOperation } from '../../reducks/supplier/operations';
 import SupplierDialog from './SupplierDialog';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 const useStyles = makeStyles({
   table: {
@@ -74,6 +75,8 @@ const Supplier = () => {
         </TableBody>
       </Table>
       <SupplierDialog handleClose={handleClose} open={selector.open}/>
+      <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen({})}/>
+
     </TableContainer>
   );
 }

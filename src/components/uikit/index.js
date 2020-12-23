@@ -1,3 +1,5 @@
 export { default as TextInput } from './TextInput'
 export { default as MainButton } from './MainButton'
 export { default as DateInput } from './DateInput'
+export { default as SwitchInput } from './SwitchInput'
+export { default as SelectInput } from './SelectInput'

@@ -1,125 +1,72 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from 'connected-react-router'
-import { salesInputOperation } from '../../reducks/sales/operations';
-import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-import { DateInput, MainButton, TextInput } from '../../components/uikit';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import { salesDataGetOperation, salesDialogCloseOperation, salesDialogOpenOperation } from '../../reducks/sales/operations';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import SalesDialog from './SalesDialog'
+
+
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+});
 
 const Sales = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const selector = useSelector( state => state.sales);
-  const [ salesDay, setSalesDay ] = useState(selector.salesDay)
-  const [ salesSubject, setSalesSubject ] = useState(selector.salesSubject)
-  const [ salesDescription, setSalesDescription ] = useState(selector.salesDescription)
+  const rows = selector.rows
 
-  const inputSalesDay = useCallback((e) => {
-    setSalesDay(e.target.value)
-    },[salesDay])
-  const inputSalesSubject = useCallback((e)=>{
-    setSalesSubject(e.target.value)
-  },[salesSubject])
-  const inputSalesDescription = useCallback((e)=>{
-    setSalesDescription(e.target.value)
-  },[salesDescription])
-
-  const submitDispatch = () => {
-    const state = { salesDay, salesSubject, salesDescription}
-    dispatch(salesInputOperation(state))
+  const handleClickOpen = (row) => {
+    dispatch( salesDialogOpenOperation(row) )
   }
+
+  const handleClose = () => {
+    dispatch( salesDialogCloseOperation() )
+  }
+
+  useEffect(()=>{
+    if ( rows.length === 0 ) dispatch( salesDataGetOperation() )
+  },[])
 
   return (
-    <form className={classes.root} autoComplete="off">
-      <div>
-        <div>
-          <DateInput
-            label={"売上日"}
-            fullWidth={true}
-            required={true}
-            value={salesDay}
-            name="salesDay"
-            onChange={inputSalesDay}
-          />
-        </div>
-        {/* <div>
-          <TextInput
-            label={"取引先"}
-            fullWidth={true}
-            multiline={false}
-            required={true}
-            rows={1}
-            value={state.supplierName}
-            name="supplierName"
-            type={"text"}
-            onChange={inputSalesDay}
-          />
-        </div> */}
-        <div>
-          <TextInput
-            label={"salesSubject"}
-            fullWidth={true}
-            multiline={false}
-            required={false}
-            rows={1}
-            value={salesSubject}
-            name="salesSubject"
-            type={"text"}
-            onChange={inputSalesSubject}
-          />
-        </div>
-        <div>
-          <TextInput
-            label={"salesDescription"}
-            fullWidth={true}
-            multiline={true}
-            required={false}
-            rows={1}
-            value={salesDescription}
-            name="salesDescription"
-            type={"text"}
-            onChange={inputSalesDescription}
-          />
-        </div>
-        {/* <div>
-          <TextInput
-            label={"salesDescription"}
-            fullWidth={true}
-            multiline={true}
-            required={false}
-            rows={1}
-            value={state.salesDescription}
-            name="salesDescription"
-            type={"text"}
-            onChange={inputSalesDescription}
-          />
-        </div> */}
-
-      </div>
-
-      <div className={classes.center}>
-        <MainButton label={"登録"} color="primary" onClick={submitDispatch} />
-      </div>
-      <div className={classes.center}>
-        <MainButton label={"戻る"} color="secondary" onClick={()=>dispatch(push('/'))}/>
-      </div>
-    </form>
-  )
-
-};
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: "0 auto",
-    maxWidth: "400px",
-    padding: "1rem",
-    height: "auto",
-    width: "calc(100% - 2rem)",
-  },
-  center : {
-    margin: "0 auto",
-    textAlign: "center",
-  }
-}));
+    <TableContainer component={Paper}>
+      <Table className={classes.table} size="small" aria-label="a dense table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Dessert (100g serving)</TableCell>
+            <TableCell align="right">Calories</TableCell>
+            <TableCell align="right">Fat&nbsp;(g)</TableCell>
+            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow key={row.name}>
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell align="right">{row.calories}</TableCell>
+              <TableCell align="right">{row.fat}</TableCell>
+              <TableCell align="right">{row.carbs}</TableCell>
+              <TableCell align="right">{row.protein}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <SalesDialog handleClose={handleClose} open={selector.open}/>
+      <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen({})}/>
+    </TableContainer>
+  );
+}
 
 export default Sales;

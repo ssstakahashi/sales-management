@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -15,25 +15,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SelectInput = (props) => {
+const SelectInput = React.memo(({ label, onChange, value, selectArray, selectValue, selectList, variant }) => {
   const classes = useStyles();
-  const [age, setAge] = useState('');
 
   return (
-    <FormControl className={classes.formControl}>
-        <InputLabel id="demo-simple-select-label">Age</InputLabel>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={age}
-                onChange={handleChange}
-            >
-            {props.array.map((x)=>(
-                <MenuItem value={x.supplierId}>{x.supplierName}</MenuItem>
-            ))}
-            </Select>
-    </FormControl>
-  )
-}
+      <FormControl className={classes.formControl}>
+        <InputLabel>{label}</InputLabel>
+        <Select
+          value={value}
+          onChange={onChange}
+          variant={variant}
+        >
+        {selectArray.map((x)=> (
+          <MenuItem key={x[selectValue]} value={x[selectValue]}>{x[selectList]}</MenuItem>
+        ))}
+        </Select>
+      </FormControl>
+  );
+});
 
 export default SelectInput;
