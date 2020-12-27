@@ -11,6 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import { supplierDataGetOperation, supplierDialogCloseOperation, supplierDialogOpenOperation } from '../../reducks/supplier/operations';
 import SupplierDialog from './SupplierDialog';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import initialState from '../../reducks/store/initialState';
 
 const useStyles = makeStyles({
   table: {
@@ -27,7 +28,7 @@ const Supplier = () => {
   console.log(selector.rows)
   console.log(rows)
 
-  const handleClickOpen = (row) => {
+  const handleClickOpen = (row = initialState.supplier) => {
     dispatch( supplierDialogOpenOperation(row) )
   }
 
@@ -75,7 +76,7 @@ const Supplier = () => {
         </TableBody>
       </Table>
       <SupplierDialog handleClose={handleClose} open={selector.open}/>
-      <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen({})}/>
+      <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen()}/>
 
     </TableContainer>
   );

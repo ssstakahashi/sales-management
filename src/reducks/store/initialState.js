@@ -1,6 +1,7 @@
 const initialState = {
   sales : {
     open             : false,
+    confirmationOpen : false,
     rows             : [],
 
     createAt           : "",
@@ -33,9 +34,9 @@ const initialState = {
       actualDepositDate    : "",  // 実際入金日
       actualDepositAmount  : "",  // 実際入金額
 
-    }],   // 入金記録 
-    status             : "",   // 回収ステータス 
-    statement          : [{productName:"テスト１", price:100,quantity:100,unit:"件",amount:10000}, {productName:"テスト２", price:200,quantity:100,unit:"本",amount:20000}],
+    }],   // 入金記録
+    status             : "",   // 回収ステータス
+    statement          : [],
   },
   supplier : {
     open             : false,
@@ -53,7 +54,7 @@ const initialState = {
     supplierEmail    : "",
     supplierMobile   : "",
     supplierInCharge : "",
-    payoutPeriod     : "", //回収サイクル
+    payoutPeriod     : 1, //回収サイクル
   },
   users : {
     cart: [],

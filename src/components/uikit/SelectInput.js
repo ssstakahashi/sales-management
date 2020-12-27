@@ -18,6 +18,8 @@ const useStyles = makeStyles((theme) => ({
 const SelectInput = React.memo(({ label, onChange, value, selectArray, selectValue, selectList, variant }) => {
   const classes = useStyles();
 
+  console.log(label, onChange, value, selectArray, selectValue, selectList, variant)
+
   return (
       <FormControl className={classes.formControl}>
         <InputLabel>{label}</InputLabel>

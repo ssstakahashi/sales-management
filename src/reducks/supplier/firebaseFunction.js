@@ -15,7 +15,6 @@ export const supplierDataGet = async() => {
   await supplierRef.get()
     .then( querySnapshot => {
       querySnapshot.forEach( doc => {
-          console.log(doc.id, " => ", doc.data());
           supplierData.push({...doc.data(), docId: doc.id })
       });
     })

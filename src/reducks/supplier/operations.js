@@ -11,11 +11,16 @@ export const supplierInputOperation = ( data ) => {
   return async( dispatch, getState ) => {
     const state = getState()
     const timeStamp = firebaseTimestamp.now()
-    const supplierId = data.supplierId ? data.supplierId : getUniqueStr(10000);
-    function getUniqueStr(strong){
-      if (strong)
-        return new Date().getTime().toString(16)  + Math.floor(strong*Math.random()).toString(16)
-     }
+    let id = data.docId || "";
+    if ( !data.docId ) {
+      const ref = supplierRef.doc();
+      id  = ref.id
+    }
+    const supplierId = data.supplierId ? data.supplierId : id;
+    // function getUniqueStr(strong){
+    //   if (strong)
+    //     return new Date().getTime().toString(16)  + Math.floor(strong*Math.random()).toString(16)
+    //  }
     const inputData = {
       supplierId,
       createAt         : data.createAt ? data.createAt : timeStamp,
@@ -29,11 +34,6 @@ export const supplierInputOperation = ( data ) => {
       supplierMobile   : data.supplierMobile || "",
       supplierInCharge : data.supplierInCharge || "",
       payoutPeriod     : data.payoutPeriod || "", //回収サイクル
-    }
-    let id = data.docId || "";
-    if ( !data.docId ) {
-      const ref = supplierRef.doc();
-      id  = ref.id
     }
     supplierCreate( inputData, id )
     let arrayRows = await state.supplier.rows
@@ -53,9 +53,7 @@ export const supplierDialogOpenOperation = ( row ) => {
   return async( dispatch, getState ) => {
     const state = getState()
     row.open = true
-    console.log(state)
     row.rows = state.supplier.rows
-    console.log(row)
     dispatch( SupplierInputAction( row ) )
   }
 }

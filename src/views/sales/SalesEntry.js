@@ -1,22 +1,29 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router'
-import { salesInputOperation } from '../../reducks/sales/operations';
+import { salesInputOperation, statementPush } from '../../reducks/sales/operations';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import { DateInput, MainButton, TextInput, SwitchInput, SelectInput } from '../../components/uikit';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import { Typography } from '@material-ui/core';
 import SalesStatement from './SalesStatement';
+import Confirmation from './Confirmation';
+import { selectEntity } from '../../reducks/store/fixedData';
+import _ from 'lodash';
 
 const SalesEntry = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const selector = useSelector( state => state.sales);
-  console.log(selector)                                   
+  const Selector = useSelector( state => state);
+  const selector = Selector.sales;
+  const supplierRows = Selector.supplier.rows
+  const Statement = _.uniqBy( selector.statement, 'statementNo')
   const [ salesDay, setSalesDay ]                     = useState(selector.salesDay)            // 売上日
-  const [ supplierName, setSupplierName ]             = useState(selector.supplierName)                             // 取引先名
-  const [ totalAmount, setTotalAmount ]               = useState(selector.totalAmount)                             // 売上高合計
+  // const [ supplierName, setSupplierName ]             = useState(selector.supplierName)                             // 取引先名
+  const [ supplierId, setSupplierId ]             = useState(selector.supplierId)                             // 取引先名
+  // const [ totalAmount, setTotalAmount ]               = useState(selector.totalAmount)                             // 売上高合計
   const [ salesEntity, setSalesEntity ]               = useState(selector.salesEntity)                             // 売上主体（個人事業主としてか？法人としてか？）
   const [ salesSubject, setSalesSubject ]             = useState(selector.salesSubject)        // 件名
   const [ salesDescription, setSalesDescription ]     = useState(selector.salesDescription)    // 摘要
@@ -32,8 +39,8 @@ const SalesEntry = (props) => {
   const [ installmentPayment, setInstallmentPayment ] = useState(selector.installmentPayment) // 回収回数
 
   const inputSalesDay            = useCallback(e => setSalesDay(e.target.value),[salesDay])
-  const inputSupplierName        = useCallback(e => setSupplierName(e.target.value),[supplierName])
-  const inputTotalAmount         = useCallback(e => setTotalAmount(e.target.value),[totalAmount])
+  const inputSupplierId          = useCallback(e => setSupplierId(e.target.value),[supplierId])
+
   const inputSalesEntity         = useCallback(e => setSalesEntity(e.target.value),[salesEntity])
   const inputSalesSubject        = useCallback(e => setSalesSubject(e.target.value),[salesSubject])
   const inputSalesDescription    = useCallback(e => setSalesDescription(e.target.value),[salesDescription])
@@ -49,55 +56,27 @@ const SalesEntry = (props) => {
   // },[quantity])
   // const inputUnit                = useCallback(e => setUnit(e.target.value),[unit])
   // // const inputAmount              = useCallback(e => setAmount(e.target.value),[amount])
-  const inputTax10               = useCallback(e => setTax10(e.target.value),[tax10])
+  // const inputTax10               = useCallback(e => setTax10(e.target.value),[tax10])
   // const inputTax08               = useCallback(e => setTax08(e.target.value),[tax08])
   // const inputConsumptionTax      = useCallback(e => setConsumptionTax(e.target.value),[consumptionTax])
   const inputInstallmentPayment  = useCallback(e => setInstallmentPayment(e.target.value),[installmentPayment])
 
   const submitDispatch = () => {
-    const state = { salesDay, salesSubject, salesDescription}
+    const state = { ...selector, salesDay, salesSubject, salesDescription, supplierId, salesEntity, taxIncluded, consumptionTax, installmentPayment}
     dispatch(salesInputOperation(state))
   }
 
-// useEffect(()=>{
-//   calcTotalAmount()
-// },[ price, quantity ])
-
-// function calcTotalAmount () {
-//   let total = parseInt( price * quantity )
-//   let consumptionTaxCalc = 0
-//   setAmount(total)
-
-//   if ( taxIncluded ) {
-//     consumptionTaxCalc = parseInt(total / 1.1) 
-//     setTax10( consumptionTaxCalc )
-//     setConsumptionTax( total - consumptionTaxCalc )
-//     setTotalAmount(total)
-//   } else {
-//     consumptionTaxCalc = total
-//     let consumptionTax = parseInt(consumptionTaxCalc * 0.1)
-//     setTax10( consumptionTaxCalc )
-//     setConsumptionTax( consumptionTax )
-//     setTotalAmount( consumptionTaxCalc + consumptionTax )
-//   }
-// }
-
-
-  const selectEntity = [{id: "001", name: "高橋企画"}, { id: "002", name: "株式会社スタジオフーズ"} ]
-
-  const TotalAmountCalc = (Rows) => {
-    const statementRows = !Rows ? selector.statement : Rows
-    const Reduce = statementRows.map( x => x.amount )
-    const TotalAmount = Reduce.reduce( (accumulator, currentValue ) => {
-      return accumulator + currentValue;
-    });
-    setTotalAmount(TotalAmount)
+  const plusStatement = (remove) => {
+    const statement = {
+      statementNo: !remove ? "" : selector.statement[selector.statement.length - 1].statementNo,
+      productName: "",
+      price : "",
+      quantity : "",
+      unit : "",
+      amount : "",
+    }
+    dispatch( statementPush( statement, taxIncluded, remove) )
   }
-  
-  useEffect(()=>{
-    TotalAmountCalc()
-  },[totalAmount])
-
 
   return (
     <form className={classes.root}>
@@ -110,14 +89,14 @@ const SalesEntry = (props) => {
             <DateInput label={"売上日"} required={true} value={salesDay} name="salesDay" onChange={inputSalesDay} />
           </div>
           <div>
-            <TextInput label={"取引相手"} fullWidth={false} required={true} value={supplierName} name="supplierName" onChange={inputSupplierName} />
+            <SelectInput label={"取引先"} onChange={inputSupplierId} value={supplierId} selectArray={supplierRows} selectValue={"supplierId"} selectList={"supplierName"}/>
           </div>
           <div>
-          <Typography>{`売上高： ${totalAmount.toLocaleString()} 円`}</Typography>
+          <Typography>{`売上高： ${selector.totalAmount.toLocaleString()} 円`}</Typography>
     
           </div>
           <div>
-          <Typography>{`消費税額： ${consumptionTax.toLocaleString()} 円`}</Typography>
+          <Typography>{`消費税額： ${selector.consumptionTax.toLocaleString()} 円`}</Typography>
           </div>
         </div>
           <div>
@@ -131,16 +110,16 @@ const SalesEntry = (props) => {
         </div>
 
         <div>
-          {selector.statement.map(( x, index) =>{
+          {Statement.map(( x, index) =>{
             return(
               <div key={index}>
-                <SalesStatement x={x} index={index} TotalAmountCalc={TotalAmountCalc} />
+                <SalesStatement x={x} index={index} taxIncluded={taxIncluded}/>
               </div>
             )
           })}
 
  
-          <Typography>{`10%対象額： ${tax10.toLocaleString()} 円`}</Typography>
+          {/* <Typography>{`10%対象額： ${tax10.toLocaleString()} 円`}</Typography> */}
           {/* <TextInput label={"金額"} fullWidth={false} required={true} value={amount} name="amount" onChange={inputAmount} type="number"/> */}
         </div>
         <div>
@@ -155,7 +134,8 @@ const SalesEntry = (props) => {
         </div>
       </div>
 
-      <AddCircleIcon color="primary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} />
+      <AddCircleIcon color="primary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>plusStatement(false)}/>
+      <RemoveCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>plusStatement(true)}/>
 
       <div className={classes.center}>
         <MainButton label={"登録"} color="primary" onClick={submitDispatch} />
@@ -163,6 +143,8 @@ const SalesEntry = (props) => {
       <div className={classes.center}>
         <MainButton label={"戻る"} color="secondary" onClick={props.handleClose}/>
       </div>
+      <Confirmation handleClose={props.handleClose} submitDispatch={submitDispatch}/>
+
     </form>
   )
 

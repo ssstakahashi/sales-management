@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router'
 import { supplierInputOperation } from '../../reducks/supplier/operations';
 import { makeStyles } from '@material-ui/core/styles';
-import { MainButton, TextInput } from '../../components/uikit';
-import SelectInput from '@material-ui/core/Select/SelectInput';
+import { MainButton, TextInput, SelectInput } from '../../components/uikit';
+import { PayoutPeriodList } from '../../reducks/store/fixedData';
 
 const SupplierEntry = (props) => {
   const classes = useStyles();
@@ -13,15 +13,15 @@ const SupplierEntry = (props) => {
 
   console.log(selector)
   
-  const [ supTemporaryName, setSupTemporaryName ] = useState(selector.supTemporaryName) 
-  const [ supplierName,     setSupplierName ]     = useState(selector.supplierName) 
-  const [ supplierAddress,  setSupplierAddress ]  = useState(selector.supplierAddress) 
-  const [ supplierPostCode, setSupplierPostCode ] = useState(selector.supplierPostCode) 
-  const [ supplierPhone,    setSupplierPhone ]    = useState(selector.supplierPhone) 
-  const [ supplierEmail,    setSupplierEmail ]    = useState(selector.supplierEmail) 
-  const [ supplierInCharge, setSupplierInCharge ] = useState(selector.supplierInCharge) 
-  const [ supplierMobile,   setSupplierMobile ]   = useState(selector.supplierMobile) 
-  const [ payoutPeriod,     setPayoutPeriod ]     = useState(selector.payoutPeriod) 
+  const [ supTemporaryName, setSupTemporaryName ] = useState(selector.supTemporaryName)
+  const [ supplierName,     setSupplierName ]     = useState(selector.supplierName)
+  const [ supplierAddress,  setSupplierAddress ]  = useState(selector.supplierAddress)
+  const [ supplierPostCode, setSupplierPostCode ] = useState(selector.supplierPostCode)
+  const [ supplierPhone,    setSupplierPhone ]    = useState(selector.supplierPhone)
+  const [ supplierEmail,    setSupplierEmail ]    = useState(selector.supplierEmail)
+  const [ supplierInCharge, setSupplierInCharge ] = useState(selector.supplierInCharge)
+  const [ supplierMobile,   setSupplierMobile ]   = useState(selector.supplierMobile)
+  const [ payoutPeriod,     setPayoutPeriod ]     = useState(selector.payoutPeriod)
 
   const inputSupTemporaryName = useCallback((e) => setSupTemporaryName(e.target.value),[supTemporaryName])
   const inputSupplierName     = useCallback((e) => setSupplierName(e.target.value),    [supplierName])
@@ -33,9 +33,7 @@ const SupplierEntry = (props) => {
   const inputSupplierMobile   = useCallback((e) => setSupplierMobile(e.target.value),  [supplierMobile])
   const inputPayoutPeriod     = useCallback((e) => setPayoutPeriod(e.target.value),    [payoutPeriod])
 
-  const PayoutPeriodList = [
-    { id : 0, title: "当日" }, { id : 1, title: "翌日" }, { id : 7, title: "翌週" }, { id : 31, title: "当月末" }, { id: 40, title: "翌月10日" }, { id : 60, title: "翌月末" }, 
-  ]
+ 
 
   const createSupplier = () => {
     const state = {
@@ -166,6 +164,7 @@ const SupplierEntry = (props) => {
             onChange={inputSupplierMobile}
           />
         </div>
+        {console.log(payoutPeriod,PayoutPeriodList,)}
         <div>
           <SelectInput label={"回収サイクル"} onChange={inputPayoutPeriod} value={payoutPeriod} selectArray={PayoutPeriodList} selectValue={"id"} selectList={"title"}/>
         </div>

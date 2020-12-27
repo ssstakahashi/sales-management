@@ -6,6 +6,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import SalesEntry from './SalesEntry';
 import Slide from '@material-ui/core/Slide';
+import Confirmation from './Confirmation';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -22,8 +23,8 @@ const SalesDialog = (props) =>{
             occasionally.
           </DialogContentText>
 
-            <SalesEntry handleClose={props.handleClose}/>
-
+            <SalesEntry handleClose={props.handleClose} />
+           
         </DialogContent>
       </Dialog>
   );
