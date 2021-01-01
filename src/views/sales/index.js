@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -24,19 +24,22 @@ const useStyles = makeStyles({
 
 const Sales = () => {
   const classes = useStyles();
+  const [ open, setOpen ] = useState(false)
   const dispatch = useDispatch();
   const Selector = useSelector( state => state);
   const selector = Selector.sales
   const supplierRows = Selector.supplier.rows || []
-
   const rows = selector.rows
+  console.log(Selector)
   console.log(selector)
 
   const handleClickOpen = (row = initialState.sales) => {
+    setOpen(true)
     dispatch( salesDialogOpenOperation(row) )
   }
 
   const handleClose = () => {
+    setOpen(false)
     dispatch( salesDialogCloseOperation() )
   }
 
@@ -52,15 +55,16 @@ const Sales = () => {
   }
 
   useEffect(()=>{
-    if ( rows.length === 0 ) dispatch( salesDataGetOperation() )
+    if ( !supplierRows.length ) dispatch( supplierDataGetOperation() )
+  },[])
+  useEffect(()=>{
+    if ( !rows.length ) dispatch( salesDataGetOperation() )
   },[])
 
-  useEffect(()=>{
-    if ( supplierRows.length === 0 ) dispatch( supplierDataGetOperation() )
-  },[])
+
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer>
       <Table className={classes.table} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
@@ -76,7 +80,10 @@ const Sales = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(( row, index) => (
+        {console.log(rows.length)}
+        {console.log(!rows.length)}
+          {rows.length ?
+            rows.map(( row, index) => (
             <TableRow key={row.serialNumber} onClick={()=>handleClickOpen(row)}>
               <TableCell component="th" scope="row" align="center">{index + 1}</TableCell>
               <TableCell align="center">{row.salesDay}</TableCell>
@@ -88,10 +95,10 @@ const Sales = () => {
               <TableCell align="right">{"残"}</TableCell>
               <TableCell align="right">{entityDisplay(row.salesEntity)}</TableCell>
             </TableRow>
-          ))}
+          )) : <></>}
         </TableBody>
       </Table>
-      <SalesDialog handleClose={handleClose} open={selector.open}/>
+      <SalesDialog handleClose={handleClose} open={open}/>
       <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen()}/>
     </TableContainer>
   );

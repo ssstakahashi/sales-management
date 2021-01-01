@@ -1,6 +1,6 @@
 const initialState = {
   sales : {
-    open             : false,
+
     confirmationOpen : false,
     rows             : [],
 
@@ -55,17 +55,45 @@ const initialState = {
     supplierMobile   : "",
     supplierInCharge : "",
     payoutPeriod     : 1, //回収サイクル
+    existence        : true, // 有効か否か
+  },
+  products : {
+    productId         : "",
+    productName       : "",
+    proNickname       : "",
+    supplierId        : "",
+    supplierName      : "",
+    supBranchName     : "",
+    defaultUnitPrice  : "",
+    unitPrice_01      : "",
+    unitPrice_02      : "",
+    unitPrice_03      : "",
+    unitPrice_04      : "",
+    unitPrice_05      : "",
+    classification_01 : "",
+    classification_02 : "",
+    classification_03 : "",
+    classification_04 : "",
+    classification_05 : "",
+    classification_06 : "",
+    classification_07 : "",
+    classification_08 : "",
+    classification_09 : "",
+    classification_10 : "",
+    existence         : true, // 有効か否か
+    createAt          : "", // 作成日時
+    updateAt          : "", // 更新日時
   },
   users : {
-    cart: [],
-    customer_id: "",
+
+    organizationId: "",
     email: "",
     isSignedIn: false,
     orders: [],
     payment_method_id: "",
     role: "",
-    uid: "",
-    username: ""
+    userId: "",
+    userName: "",
   }
 }
 

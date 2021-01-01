@@ -36,13 +36,13 @@ export const signIn = (email, password) => {
                     // }
 
                     dispatch(signInAction({
-                        customer_id: (data.customer_id) ? data.customer_id : "",
+                        organizationId : (data.organizationId) ? data.organizationId : "",
                         email: data.email,
                         isSignedIn: true,
                         role: data.role,
                         payment_method_id: (data.payment_method_id) ? data.payment_method_id : "",
-                        uid: userId,
-                        username: data.username,
+                        userId: userId,
+                        userName: data.userName,
                     }));
 
                     // dispatch(hideLoadingAction());
@@ -68,13 +68,13 @@ export const listenAuthState = () => {
 
                         // Update logged in user state
                         dispatch(signInAction({
-                            customer_id: (data.customer_id) ? data.customer_id : "",
+                            organizationId : (data.organizationId) ? data.organizationId : "",
                             email: data.email,
                             isSignedIn: true,
                             payment_method_id: (data.payment_method_id) ? data.payment_method_id : "",
                             role: data.role,
-                            uid: user.uid,
-                            username: data.username,
+                            userId: user.uid,
+                            userName: data.userName,
                         }))
                     })
             } else {

@@ -5,22 +5,19 @@ import { supplierDataGet, supplierCreate } from './firebaseFunction';
 import { db, firebaseTimestamp } from '../../firebase';
 import _ from 'lodash';
 
-const supplierRef = db.collection('supplier')
+const supplierRef = db.collection('organization')
 
 export const supplierInputOperation = ( data ) => {
   return async( dispatch, getState ) => {
     const state = getState()
+    const organizationId = state.users.organizationId
     const timeStamp = firebaseTimestamp.now()
     let id = data.docId || "";
     if ( !data.docId ) {
-      const ref = supplierRef.doc();
+      const ref = supplierRef.doc(organizationId).collection('supplier').doc();
       id  = ref.id
     }
     const supplierId = data.supplierId ? data.supplierId : id;
-    // function getUniqueStr(strong){
-    //   if (strong)
-    //     return new Date().getTime().toString(16)  + Math.floor(strong*Math.random()).toString(16)
-    //  }
     const inputData = {
       supplierId,
       createAt         : data.createAt ? data.createAt : timeStamp,
@@ -35,11 +32,11 @@ export const supplierInputOperation = ( data ) => {
       supplierInCharge : data.supplierInCharge || "",
       payoutPeriod     : data.payoutPeriod || "", //回収サイクル
     }
-    supplierCreate( inputData, id )
+    supplierCreate( inputData, id, organizationId )
     let arrayRows = await state.supplier.rows
-    console.log(arrayRows)
     arrayRows.unshift({ ...inputData, docId : id })
     const Rows = await _.orderBy( _.uniqBy( arrayRows, 'docId'),  ['createAt'], ['desc'] )
+    console.log(Rows)
 
     dispatch( SupplierInputAction({
       ...inputData,
@@ -73,10 +70,10 @@ export const supplierDialogCloseOperation = ( row = {} ) => {
 export const supplierDataGetOperation = () => {
   return async( dispatch, getState ) => {
     const state = getState()
-    console.log("テスト",state)
-    const getData = await supplierDataGet().then((res)=>{
-      console.log(res)
-      return res
+    const organizationId = state.users.organizationId
+    const getData = await supplierDataGet(organizationId).then(async(res)=>{
+      await console.log(res)
+      return await res
     });
     const supplierData = await {
         ...state.supplier,

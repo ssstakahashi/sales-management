@@ -3,19 +3,19 @@ import initialState from '../store/initialState';
 import { salesCreate, salesDataGet } from './firebaseFunction';
 import { db, firebaseTimestamp } from '../../firebase';
 import _ from 'lodash';
+import { getUserId } from '../users/selectors';
 
-const salesRef = db.collection('sales')
+const salesRef = db.collection('organization')
 
 // データをFirebaseへ登録
 export const salesInputOperation = ( data ) => {
   return async( dispatch, getState ) => {
     const state = getState()
-    console.log(data)
+    const organizationId = state.users.organizationId
     const serialNumber = data.serialNumber ? data.serialNumber : parseInt( state.sales.rows.length + 1 )
-    const userId = state.users.uid
+    const userId = getUserId(state)
     const timeStamp = firebaseTimestamp.now()
     const statement = data.statement.map( x => x.amount !== 0 && x ).filter( x => x)
-    console.log(statement)
     const inputData = {
       createAt           : data.createAt ? data.createAt : timeStamp,
       updateAt           : timeStamp,
@@ -47,29 +47,28 @@ export const salesInputOperation = ( data ) => {
     }
     let id = data.docId || "";
     if ( !data.docId ) {
-      const ref = salesRef.doc();
+      const ref = salesRef.doc(organizationId).collection('sales').doc();
       id  = ref.id
     }
-    salesCreate( inputData, id )
+    salesCreate( inputData, id, organizationId )
     let salesRows = state.sales.rows
     salesRows.unshift(inputData)
     salesRows = _.orderBy( _.uniqBy( salesRows, 'serialNumber' ), ['serialNumber'],['asc'])
     const nextData = {
       ...inputData,
       rows             : salesRows,
-      open             : false,
       confirmationOpen : false,
     }
     dispatch( SalesInputAction( nextData ) )
   }
 }
 
-
 // データをFirebaseから取得
 export const salesDataGetOperation = () => {
   return async( dispatch, getState ) => {
-    const getData = await salesDataGet().then((res)=>{
-      console.log(res)
+    const state = getState()
+    const organizationId = state.users.organizationId
+    const getData = await salesDataGet(organizationId).then((res)=>{
       return _.orderBy( res,['serialNumber'],['asc'])
     });
     const salesData = await {
@@ -88,14 +87,9 @@ export const statementPush = ( row, taxIncluded, remove = false ) => {
     let statement = state.sales.statement
     await statement.unshift(row)
     statement = await _.orderBy( _.uniqBy( statement, 'statementNo' ), ['statementNo'],['asc'])
-    console.log(statement)
     if ( remove ) {
-      console.log(statement)
       await statement.pop()
-      console.log(statement)
     }
-    console.log(remove)
-    console.log(statement)
     const totalAmountCalc = statement.map( x => x.amount )
     let totalAmount = totalAmountCalc.reduce( (accumulator, currentValue ) => {
       return accumulator + currentValue;
@@ -122,10 +116,8 @@ export const statementPush = ( row, taxIncluded, remove = false ) => {
 export const salesDialogOpenOperation = ( row ) => {
   return async( dispatch, getState ) => {
     const state = getState()
-    row.open = true
     row.rows = state.sales.rows
     row.confirmationOpen = false
-    console.log(row)
     dispatch( SalesInputAction( row ) )
   }
 }
@@ -135,10 +127,8 @@ export const salesDialogCloseOperation = (row) => {
   return async( dispatch, getState ) => {
     const state = getState()
     row = initialState.sales
-    row.open = false
     row.rows = state.sales.rows
     row.confirmationOpen = false
-    console.log(row)
     dispatch( SalesInputAction( row ) )
   }
 }

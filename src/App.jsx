@@ -5,21 +5,10 @@ import Layout from './layout/Layout'
 import Router from './Router';
 
 function App() {
-  const dispatch = useDispatch();
-  const selecter = useSelector(state => state);
-  const ver = "0.0.9"
+  const ver = "0.0.10"
 
-  console.log(selecter)
+  console.log(ver)
   return (
-    // <div className="App">
-    //   <header className="App-header">
-    //    <h1>Hello</h1>
-    //     <button onClick={()=>{
-    //       dispatch(SalesInputAction({amount: 500, proName: "ニキビ予防"}))}}>
-    //       test
-    //     </button>
-    //   </header>
-    // </div>
     <main>
       <Layout>
         <Router />

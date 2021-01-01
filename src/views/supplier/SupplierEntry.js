@@ -45,6 +45,8 @@ const SupplierEntry = (props) => {
       supplierPhone,
       supplierEmail,
       supplierInCharge,
+      supplierMobile,
+      payoutPeriod,
     }
     dispatch(supplierInputOperation(state))
   }

@@ -63,6 +63,7 @@ const SalesEntry = (props) => {
 
   const submitDispatch = () => {
     const state = { ...selector, salesDay, salesSubject, salesDescription, supplierId, salesEntity, taxIncluded, consumptionTax, installmentPayment}
+    props.handleClose()
     dispatch(salesInputOperation(state))
   }
 
