@@ -96,7 +96,7 @@ const SupplierEntry = (props) => {
             onChange={inputSupplierPostCode}
           />
         </div>
-        <div>     
+        <div>
           <TextInput
             label={"所在地"}
             fullWidth={true}

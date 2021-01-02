@@ -12,14 +12,13 @@ export const supplierInputOperation = ( data ) => {
     const state = getState()
     const organizationId = state.users.organizationId
     const timeStamp = firebaseTimestamp.now()
-    let id = data.docId || "";
-    if ( !data.docId ) {
+    let id = "";
+    if ( !data.supplierId ) {
       const ref = supplierRef.doc(organizationId).collection('supplier').doc();
       id  = ref.id
     }
-    const supplierId = data.supplierId ? data.supplierId : id;
     const inputData = {
-      supplierId,
+      supplierId       : data.supplierId || id,
       createAt         : data.createAt ? data.createAt : timeStamp,
       updateAt         : timeStamp,
       supTemporaryName : data.supTemporaryName,

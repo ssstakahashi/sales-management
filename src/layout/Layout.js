@@ -1,16 +1,25 @@
 import React from 'react';
-// import Header from '../header/Header';
-import Style from './Layout.module.css';
+import Header from './Header';
+import Style from './Layout.module.scss';
 import "fontsource-roboto"
+import { theme } from './theme'
+import { ThemeProvider as MaterialThemeProvider, StylesProvider} from "@material-ui/styles";
+import { ThemeProvider as StyledThemeProvider } from "styled-components";
 
 const Layout = ({children}) => {
     return (
-        <div className={Style.wrapper}>
-            {/* <Header /> */}
-            <div className={Style.main}>
-            {children}
-            </div>
-        </div>
+        <StylesProvider injectFirst>
+            <MaterialThemeProvider theme={theme}>
+                <StyledThemeProvider theme={theme}>
+                    <div className={Style.wrapper}>
+                        <Header />
+                        <div className={Style.main}>
+                            {children}
+                        </div>
+                    </div>
+                </StyledThemeProvider>
+            </MaterialThemeProvider>
+        </StylesProvider>
     )
 }
 

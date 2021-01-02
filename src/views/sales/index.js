@@ -7,18 +7,23 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import { salesDataGetOperation, salesDialogCloseOperation, salesDialogOpenOperation } from '../../reducks/sales/operations';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import SalesDialog from './SalesDialog'
 import initialState from '../../reducks/store/initialState';
 import { selectEntity } from '../../reducks/store/fixedData';
 import { supplierDataGetOperation } from '../../reducks/supplier/operations';
+import { MainButton } from '../../components/uikit';
+import { push } from 'connected-react-router';
 
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
+  },
+  center : {
+    margin: "0 auto",
+    textAlign: "center",
   },
 });
 
@@ -30,8 +35,6 @@ const Sales = () => {
   const selector = Selector.sales
   const supplierRows = Selector.supplier.rows || []
   const rows = selector.rows
-  console.log(Selector)
-  console.log(selector)
 
   const handleClickOpen = (row = initialState.sales) => {
     setOpen(true)
@@ -93,13 +96,16 @@ const Sales = () => {
               <TableCell align="right">{row.status}</TableCell>
               <TableCell align="right">{"入金額"}</TableCell>
               <TableCell align="right">{"残"}</TableCell>
-              <TableCell align="right">{entityDisplay(row.salesEntity)}</TableCell>
+              <TableCell align="left">{entityDisplay(row.salesEntity)}</TableCell>
             </TableRow>
           )) : <></>}
         </TableBody>
       </Table>
       <SalesDialog handleClose={handleClose} open={open}/>
       <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen()}/>
+      <div className={classes.center}>
+        <MainButton label={"戻る"} color="secondary" onClick={()=>dispatch(push('/'))}/>
+      </div>
     </TableContainer>
   );
 }

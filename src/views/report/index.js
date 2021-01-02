@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -6,6 +7,8 @@ import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 import { SalesReportTableHeader, SalesReportTableToolbar } from './SalesHeader';
 import SalesReportTableBody from './SalesBody';
+import { MainButton } from '../../components/uikit';
+import { push } from 'connected-react-router';
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -47,6 +50,7 @@ const headCells = [
 
 export default function SalesTableIndex() {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
   const [selected, setSelected] = useState([]);
@@ -120,6 +124,9 @@ export default function SalesTableIndex() {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <div className={classes.center}>
+        <MainButton label={"戻る"} color="secondary" onClick={()=>dispatch(push('/'))}/>
+      </div>
     </div>
   );
 }
@@ -146,5 +153,9 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: 20,
     width: 1,
+  },
+  center : {
+    margin: "0 auto",
+    textAlign: "center",
   },
 }));

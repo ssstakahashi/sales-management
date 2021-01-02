@@ -1,8 +1,6 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from 'connected-react-router'
 import { salesInputOperation, statementPush } from '../../reducks/sales/operations';
-import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import { DateInput, MainButton, TextInput, SwitchInput, SelectInput } from '../../components/uikit';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
@@ -90,7 +88,10 @@ const SalesEntry = (props) => {
             <DateInput label={"売上日"} required={true} value={salesDay} name="salesDay" onChange={inputSalesDay} />
           </div>
           <div>
-            <SelectInput label={"取引先"} onChange={inputSupplierId} value={supplierId} selectArray={supplierRows} selectValue={"supplierId"} selectList={"supplierName"}/>
+            <SelectInput label={"取引先"} onChange={inputSupplierId}
+              value={supplierId} selectArray={supplierRows}
+              selectValue={"supplierId"} selectList={"supplierName"}
+            />
           </div>
           <div>
           <Typography>{`売上高： ${selector.totalAmount.toLocaleString()} 円`}</Typography>

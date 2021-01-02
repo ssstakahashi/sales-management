@@ -18,6 +18,5 @@ export const salesDataGet = async(organizationId) => {
           salesData.push({...doc.data(), docId: doc.id })
       });
     })
-  console.log(salesData)
   return salesData
 }

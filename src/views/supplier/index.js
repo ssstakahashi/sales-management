@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { push } from 'connected-react-router'
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -12,10 +13,15 @@ import { supplierDataGetOperation, supplierDialogCloseOperation, supplierDialogO
 import SupplierDialog from './SupplierDialog';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import initialState from '../../reducks/store/initialState';
+import { MainButton } from '../../components/uikit';
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
+  },
+  center : {
+    margin: "0 auto",
+    textAlign: "center",
   },
 });
 
@@ -77,7 +83,9 @@ const Supplier = () => {
       </Table>
       <SupplierDialog handleClose={handleClose} open={selector.open}/>
       <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen()}/>
-
+      <div className={classes.center}>
+        <MainButton label={"戻る"} color="secondary" onClick={()=>dispatch(push('/'))}/>
+      </div>
     </TableContainer>
   );
 }

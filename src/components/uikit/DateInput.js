@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
 
 const DateInput = React.memo((props) => {
   const classes = useStyles();
-  console.log(props)
 
   return (
     // <form className={classes.container} noValidate>

@@ -11,33 +11,48 @@ export const productInputOperation = ( data ) => {
     const state = getState()
     const organizationId = state.users.organizationId
     const timeStamp = firebaseTimestamp.now()
-    let id = data.docId || "";
-    if ( !data.docId ) {
-      const ref = productRef.doc(organizationId).collection.doc('products');
+    let id = "";
+    if ( !data.productId ) {
+      const ref = productRef.doc(organizationId).collection('products').doc();
       id  = ref.id
     }
-    const productId = data.productId ? data.productId : id;
-    // function getUniqueStr(strong){
-    //   if (strong)
-    //     return new Date().getTime().toString(16)  + Math.floor(strong*Math.random()).toString(16)
-    //  }
     const inputData = {
-      productId,
+      productId         : data.productId || id,
+      productName       : data.productName,
+      proNickname       : data.proNickname,
+      supplierId        : data.supplierId || "",
+      supplierName      : "",
+      supBranchName     : "",
+      defaultUnitPrice  : data.defaultUnitPrice,
+      unitPrice_01      : data.unitPrice_01,
+      unitPrice_02      : data.unitPrice_02,
+      unitPrice_03      : data.unitPrice_03,
+      unitPrice_04      : data.unitPrice_04,
+      unitPrice_05      : data.unitPrice_05,
+      unit              : data.unit,
+      classification_01 : "",
+      classification_02 : "",
+      classification_03 : "",
+      classification_04 : "",
+      classification_05 : "",
+      classification_06 : "",
+      classification_07 : "",
+      classification_08 : "",
+      classification_09 : "",
+      classification_10 : "",
+      existence         : true, // 有効か否か
+
       createAt         : data.createAt ? data.createAt : timeStamp,
       updateAt         : timeStamp,
-
-
     }
     productCreate( inputData, id, organizationId )
-    let arrayRows = await state.products.rows
-    console.log(arrayRows)
+    let arrayRows = await data.products.rows
     arrayRows.unshift({ ...inputData, docId : id })
     const Rows = await _.orderBy( _.uniqBy( arrayRows, 'docId'),  ['createAt'], ['desc'] )
 
     dispatch( ProductInputAction({
       ...inputData,
       rows : Rows,
-      open : false,
     }))
   }
 }
@@ -45,7 +60,6 @@ export const productInputOperation = ( data ) => {
 export const productDialogOpenOperation = ( row ) => {
   return async( dispatch, getState ) => {
     const state = getState()
-    row.open = true
     row.rows = state.products.rows
     dispatch( ProductInputAction( row ) )
   }
@@ -55,7 +69,6 @@ export const productDialogCloseOperation = ( row = {} ) => {
   return async( dispatch, getState ) => {
     const state = getState()
     row = initialState.products
-    row.open = false
     row.rows = state.products.rows
     dispatch( ProductInputAction({
         ...row,
@@ -66,9 +79,8 @@ export const productDialogCloseOperation = ( row = {} ) => {
 export const productDataGetOperation = () => {
   return async( dispatch, getState ) => {
     const state = getState()
-    console.log("テスト", state)
-    const getData = await productDataGet().then((res)=>{
-      console.log(res)
+    const organizationId = state.users.organizationId
+    const getData = await productDataGet(organizationId).then((res)=>{
       return res
     });
     const productData = await {

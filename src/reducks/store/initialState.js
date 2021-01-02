@@ -58,6 +58,8 @@ const initialState = {
     existence        : true, // 有効か否か
   },
   products : {
+    rows              : [],
+
     productId         : "",
     productName       : "",
     proNickname       : "",
@@ -70,6 +72,7 @@ const initialState = {
     unitPrice_03      : "",
     unitPrice_04      : "",
     unitPrice_05      : "",
+    unit              : "",   // 単位
     classification_01 : "",
     classification_02 : "",
     classification_03 : "",
