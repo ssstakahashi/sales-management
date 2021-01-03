@@ -15,6 +15,7 @@ import { selectEntity } from '../../reducks/store/fixedData';
 import { supplierDataGetOperation } from '../../reducks/supplier/operations';
 import { MainButton } from '../../components/uikit';
 import { push } from 'connected-react-router';
+import { Paper } from '@material-ui/core';
 
 
 const useStyles = makeStyles({
@@ -67,7 +68,7 @@ const Sales = () => {
 
 
   return (
-    <TableContainer>
+    <TableContainer component={Paper}>
       <Table className={classes.table} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
@@ -83,8 +84,6 @@ const Sales = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-        {console.log(rows.length)}
-        {console.log(!rows.length)}
           {rows.length ?
             rows.map(( row, index) => (
             <TableRow key={row.serialNumber} onClick={()=>handleClickOpen(row)}>

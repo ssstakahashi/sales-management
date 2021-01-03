@@ -4,6 +4,7 @@ import { salesCreate, salesDataGet } from './firebaseFunction';
 import { db, firebaseTimestamp } from '../../firebase';
 import _ from 'lodash';
 import { getUserId } from '../users/selectors';
+import { ConsumptionTax } from '../../components/function/ConsumptionTax';
 
 const salesRef = db.collection('organization')
 
@@ -24,11 +25,12 @@ export const salesInputOperation = ( data ) => {
       salesDay           : data.salesDay,　// 売上日
       supplierName       : data.supplierName,　// 取引先名
       supplierId     　  : data.supplierId,　// 取引先ID
-      totalAmount        : state.sales.totalAmount,  // 売上合計(税込)
+      totalAmount        : data.totalAmount,  // 売上合計(税込)
       salesSubject       : data.salesSubject,　// 件名
       salesDescription   : data.salesDescription,  // 摘要
       salesEntity        : data.salesEntity,  // 売上主体（個人事業主としてか？法人としてか？）
       userId             : userId,
+      docId              : data.docId,
       existence          : true, // 有効か否か
       taxIncluded      　: data.taxIncluded, // 税込み＝True 税抜き=false
 
@@ -91,16 +93,21 @@ export const statementPush = ( row, taxIncluded, remove = false ) => {
       await statement.pop()
     }
     const totalAmountCalc = statement.map( x => x.amount )
-    let totalAmount = totalAmountCalc.reduce( (accumulator, currentValue ) => {
-      return accumulator + currentValue;
+    const totalAmount = totalAmountCalc.reduce( (accumulator, currentValue ) => {
+      if (taxIncluded) {
+        return accumulator + currentValue
+      } else {
+        return ( accumulator * 1.1 ) + currentValue
+      }
     });
-    let consumptionTax = 0
-    if ( taxIncluded ) {
-      consumptionTax = parseInt( totalAmount - ( totalAmount / 1.1 ) )
-    } else {
-      consumptionTax = parseInt( totalAmount * 0.1 )
-      totalAmount = totalAmount + consumptionTax
-    }
+    const consumptionTax = ConsumptionTax( taxIncluded, totalAmount )
+    // let consumptionTax = 0
+    // if ( taxIncluded ) {
+    //   consumptionTax = parseInt( totalAmount - ( totalAmount / 1.1 ) )
+    // } else {
+    //   consumptionTax = parseInt( totalAmount * 0.1 )
+    //   totalAmount = totalAmount + consumptionTax
+    // }
     const salesData = await {
         ...state.sales,
         rows : state.sales.rows,

@@ -16,6 +16,7 @@ const initialState = {
     salesDescription   : "",  // 摘要
     salesEntity        : "",  // 売上主体（個人事業主としてか？法人としてか？）
     userId             : "",
+    docId              : "",
     existence          : true, // 有効か否か
     taxIncluded      　: true, // 税込み＝True 税抜き=false
     productId          : "",　 // 商品ID

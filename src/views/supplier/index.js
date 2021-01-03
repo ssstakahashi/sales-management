@@ -30,9 +30,6 @@ const Supplier = () => {
   const dispatch = useDispatch();
   const selector = useSelector( state => state.supplier);
   const rows = selector.rows
-  console.log(selector)
-  console.log(selector.rows)
-  console.log(rows)
 
   const handleClickOpen = (row = initialState.supplier) => {
     dispatch( supplierDialogOpenOperation(row) )

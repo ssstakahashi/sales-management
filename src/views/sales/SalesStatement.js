@@ -1,24 +1,26 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { statementPush } from '../../reducks/sales/operations';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextInput, SelectInput } from '../../components/uikit';
 import { Typography } from '@material-ui/core';
 import { selectUnit } from '../../reducks/store/fixedData';
+import { productDataGetOperation } from '../../reducks/product/operations';
 
 
 const SalesStatement = ({ x, index, taxIncluded }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const selector = useSelector( state => state);
+  const productRows = selector.products.rows
 
-  const [ productName, setProductName ]               = useState(x.productName)         // 商品名
+  const [ productId, setProductId ]               = useState(x.productId)         // 商品ID
   const [ price, setPrice ]                           = useState(x.price)               // 単価
   const [ quantity, setQuantity ]                     = useState(x.quantity)            // 数量
   const [ unit, setUnit ]                             = useState(x.unit)                // 単価
   const [ amount, setAmount ]                         = useState(x.amount)              // 金額
-  console.log(productName, price, quantity, unit, amount)
 
-  const inputProductName         = useCallback(e => setProductName(e.target.value),[productName])
+  const inputProductId         = useCallback(e => setProductId(e.target.value),[productId])
   const inputPrice               = useCallback(e => setPrice(parseInt(e.target.value) ),[price])
   const inputQuantity            = useCallback(e => setQuantity(parseInt(e.target.value)),[quantity])
   const inputUnit                = useCallback(e => setUnit(e.target.value),[unit])
@@ -27,7 +29,7 @@ const SalesStatement = ({ x, index, taxIncluded }) => {
 
   useEffect(()=>{
       const amount = calcTotalAmount()
-      dispatch( statementPush({ statementNo: index + 1, productName, price, quantity, unit, amount}, taxIncluded))
+      dispatch( statementPush({ statementNo: index + 1, productId, price, quantity, unit, amount}, taxIncluded))
   },[ price, quantity, taxIncluded ])
 
   function calcTotalAmount () {
@@ -36,11 +38,27 @@ const SalesStatement = ({ x, index, taxIncluded }) => {
       return total
   }
 
+  useEffect(()=>{
+    if ( !productRows.length ) dispatch( productDataGetOperation() )
+  },[])
+
+  useEffect(()=>{
+    if (productId && !price) {
+      const selectProduct = productRows.find( x => x.productId === productId)
+      setPrice( parseInt(selectProduct[ selectProduct.defaultUnitPrice ]) )
+      setUnit(selectProduct.unit)
+      setQuantity(1)
+    }
+  },[productId])
+
 
   return (
       <div className={classes.container}>
           <div>
-            <TextInput label={"商品名"} fullWidth={false} required={true} value={productName} name="productName" onChange={inputProductName} />
+            <SelectInput label={"商品名"} onChange={inputProductId}
+              value={productId} selectArray={productRows}
+              selectValue={"productId"} selectList={"productName"}
+            />
           </div>
           <div>
             <TextInput label={"単価"} fullWidth={false} required={false} value={price} name="price" onChange={inputPrice} type="number"/>

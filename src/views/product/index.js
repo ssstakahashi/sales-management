@@ -13,6 +13,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import initialState from '../../reducks/store/initialState';
 import { MainButton } from '../../components/uikit';
 import { push } from 'connected-react-router';
+import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles({
   table: {
@@ -52,7 +53,7 @@ const Product = () => {
   }
 
   return (
-    <TableContainer>
+    <TableContainer component={Paper}>
       <Table className={classes.table} size="small">
         <TableHead>
           <TableRow>

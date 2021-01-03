@@ -21,7 +21,7 @@ const SalesEntry = (props) => {
   const [ salesDay, setSalesDay ]                     = useState(selector.salesDay)            // 売上日
   // const [ supplierName, setSupplierName ]             = useState(selector.supplierName)                             // 取引先名
   const [ supplierId, setSupplierId ]             = useState(selector.supplierId)                             // 取引先名
-  // const [ totalAmount, setTotalAmount ]               = useState(selector.totalAmount)                             // 売上高合計
+  const [ totalAmount, setTotalAmount ]               = useState(selector.totalAmount)                             // 売上高合計
   const [ salesEntity, setSalesEntity ]               = useState(selector.salesEntity)                             // 売上主体（個人事業主としてか？法人としてか？）
   const [ salesSubject, setSalesSubject ]             = useState(selector.salesSubject)        // 件名
   const [ salesDescription, setSalesDescription ]     = useState(selector.salesDescription)    // 摘要
@@ -38,7 +38,6 @@ const SalesEntry = (props) => {
 
   const inputSalesDay            = useCallback(e => setSalesDay(e.target.value),[salesDay])
   const inputSupplierId          = useCallback(e => setSupplierId(e.target.value),[supplierId])
-
   const inputSalesEntity         = useCallback(e => setSalesEntity(e.target.value),[salesEntity])
   const inputSalesSubject        = useCallback(e => setSalesSubject(e.target.value),[salesSubject])
   const inputSalesDescription    = useCallback(e => setSalesDescription(e.target.value),[salesDescription])
@@ -67,12 +66,13 @@ const SalesEntry = (props) => {
 
   const plusStatement = (remove) => {
     const statement = {
-      statementNo: !remove ? "" : selector.statement[selector.statement.length - 1].statementNo,
-      productName: "",
-      price : "",
-      quantity : "",
-      unit : "",
-      amount : "",
+      statementNo : !remove ? "" : selector.statement[selector.statement.length - 1].statementNo,
+      productName : "",
+      productId   : "",
+      price       : "",
+      quantity    : "",
+      unit        : "",
+      amount      : "",
     }
     dispatch( statementPush( statement, taxIncluded, remove) )
   }
@@ -115,7 +115,7 @@ const SalesEntry = (props) => {
           {Statement.map(( x, index) =>{
             return(
               <div key={index}>
-                <SalesStatement x={x} index={index} taxIncluded={taxIncluded}/>
+                <SalesStatement x={x} index={index} taxIncluded={taxIncluded} />
               </div>
             )
           })}
@@ -149,7 +149,6 @@ const SalesEntry = (props) => {
 
     </form>
   )
-
 };
 
 const useStyles = makeStyles((theme) => ({

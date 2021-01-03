@@ -8,6 +8,7 @@ const productRef = db.collection('organization')
 
 export const productInputOperation = ( data ) => {
   return async( dispatch, getState ) => {
+    console.log(data)
     const state = getState()
     const organizationId = state.users.organizationId
     const timeStamp = firebaseTimestamp.now()
@@ -46,7 +47,7 @@ export const productInputOperation = ( data ) => {
       updateAt         : timeStamp,
     }
     productCreate( inputData, id, organizationId )
-    let arrayRows = await data.products.rows
+    let arrayRows = await data.rows
     arrayRows.unshift({ ...inputData, docId : id })
     const Rows = await _.orderBy( _.uniqBy( arrayRows, 'docId'),  ['createAt'], ['desc'] )
 

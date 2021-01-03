@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from './Header';
+// import Header from './Header';
 import Style from './Layout.module.scss';
 import "fontsource-roboto"
 import { theme } from './theme'
@@ -12,7 +12,7 @@ const Layout = ({children}) => {
             <MaterialThemeProvider theme={theme}>
                 <StyledThemeProvider theme={theme}>
                     <div className={Style.wrapper}>
-                        <Header />
+                        {/* <Header /> */}
                         <div className={Style.main}>
                             {children}
                         </div>
