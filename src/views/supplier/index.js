@@ -58,7 +58,7 @@ const Supplier = () => {
             <TableCell align="center">Email</TableCell>
             <TableCell align="center">携帯</TableCell>
             <TableCell align="center">担当者</TableCell>
-            <TableCell align="center">回収期間</TableCell>
+            <TableCell align="center">回収</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
