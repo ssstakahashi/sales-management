@@ -8,20 +8,20 @@ import Select from '@material-ui/core/Select';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
+    minWidth: 150,
   },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
+  formControlHalf: {
+    margin: theme.spacing(1),
+    minWidth: 80,
   },
+
 }));
 
-const SelectInput = React.memo(({ label, onChange, value, selectArray, selectValue, selectList, variant }) => {
+const SelectInput = React.memo(({ label, onChange, value, selectArray, selectValue, selectList, variant, styles }) => {
   const classes = useStyles();
 
-  console.log(label, onChange, value, selectArray, selectValue, selectList, variant)
-
   return (
-      <FormControl className={classes.formControl}>
+      <FormControl className={ !styles ? classes.formControl : classes.formControlHalf}>
         <InputLabel>{label}</InputLabel>
         <Select
           value={value}

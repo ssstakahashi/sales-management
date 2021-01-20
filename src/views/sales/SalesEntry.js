@@ -5,11 +5,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import { DateInput, MainButton, TextInput, SwitchInput, SelectInput } from '../../components/uikit';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import { Typography } from '@material-ui/core';
+import { Grid, Paper, TableBody, Typography } from '@material-ui/core';
 import SalesStatement from './SalesStatement';
 import Confirmation from './Confirmation';
 import { selectEntity } from '../../reducks/store/fixedData';
 import _ from 'lodash';
+
+import PaymentEntry from './payment/PaymentEntry';
 
 const SalesEntry = (props) => {
   const classes = useStyles();
@@ -18,6 +20,8 @@ const SalesEntry = (props) => {
   const selector = Selector.sales;
   const supplierRows = Selector.supplier.rows
   const Statement = _.uniqBy( selector.statement, 'statementNo')
+  const billingAmount = selector.billingAmount
+  console.log(selector)
   const [ salesDay, setSalesDay ]                     = useState(selector.salesDay)            // 売上日
   // const [ supplierName, setSupplierName ]             = useState(selector.supplierName)                             // 取引先名
   const [ supplierId, setSupplierId ]             = useState(selector.supplierId)                             // 取引先名
@@ -69,84 +73,111 @@ const SalesEntry = (props) => {
       statementNo : !remove ? "" : selector.statement[selector.statement.length - 1].statementNo,
       productName : "",
       productId   : "",
-      price       : "",
-      quantity    : "",
+      price       :  0,
+      quantity    :  0,
       unit        : "",
-      amount      : "",
+      amount      :  0,
+      remarks     : "",
     }
-    dispatch( statementPush( statement, taxIncluded, remove) )
+    if ( !remove ) {
+      dispatch( statementPush( statement, taxIncluded, remove) )
+    } else {
+      if ( Statement.length >= 2  ) dispatch( statementPush( statement, taxIncluded, remove) )
+    }
+
   }
 
   return (
     <form className={classes.root}>
-      <div>
-        <div>
+      <Grid container direction="column" justify={"center"} alignItems="flex-start" spacing={5}>
+        <Grid item>
           <TextInput label={"件名"} fullWidth={true} required={true} value={salesSubject} name="salesSubject" onChange={inputSalesSubject} />
-        </div>
-        <div className={classes.container}>
-          <div>
+        </Grid>
+
+        <Grid item className={classes.container}>
+          <Grid item>
             <DateInput label={"売上日"} required={true} value={salesDay} name="salesDay" onChange={inputSalesDay} />
-          </div>
-          <div>
-            <SelectInput label={"取引先"} onChange={inputSupplierId}
-              value={supplierId} selectArray={supplierRows}
-              selectValue={"supplierId"} selectList={"supplierName"}
-            />
-          </div>
-          <div>
-          <Typography>{`売上高： ${selector.totalAmount.toLocaleString()} 円`}</Typography>
-    
-          </div>
-          <div>
-          <Typography>{`消費税額： ${selector.consumptionTax.toLocaleString()} 円`}</Typography>
-          </div>
-        </div>
-          <div>
-            <SelectInput label={"販売主体"} value={salesEntity} selectArray={selectEntity} selectValue={"id"} selectList={"name"} onChange={inputSalesEntity} />
+          </Grid>
 
-            <SwitchInput label={"税込"} value={taxIncluded} name="taxIncluded" onChange={inputTaxIncluded} color={"primary"}/>
-          </div>
+          <Grid item>
+              <SelectInput label={"販売主体"} value={salesEntity} selectArray={selectEntity} selectValue={"id"} selectList={"name"} onChange={inputSalesEntity} />
+          </Grid>
+          <Grid item>
+              <SelectInput label={"取引先"} onChange={inputSupplierId}
+                value={supplierId} selectArray={supplierRows}
+                selectValue={"supplierId"} selectList={"supplierName"}
+              />
+          </Grid>
+          <Grid item>
+              <TextInput label={"摘要"} fullWidth={true} required={true} value={salesDescription} name="salesDescription" onChange={inputSalesDescription} multiline={true} rows={1}/>
+          </Grid>
+        </Grid>
+  
 
-        <div>
-          <TextInput label={"摘要"} fullWidth={true} required={true} value={salesDescription} name="salesDescription" onChange={inputSalesDescription} multiline={true} rows={3}/>
-        </div>
+        <Grid item className={classes.textArea}  container direction="row" justify={"flex-start"} alignItems="center">
+            <Grid item xs={2}>
+              <Typography variant={"h4"}>明細</Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <SwitchInput label={"税込"} value={taxIncluded} name="taxIncluded" onChange={inputTaxIncluded} color={"primary"}/>
+          </Grid>
+        </Grid>
 
-        <div>
-          {Statement.map(( x, index) =>{
-            return(
-              <div key={index}>
-                <SalesStatement x={x} index={index} taxIncluded={taxIncluded} />
-              </div>
-            )
-          })}
+        <Grid component={Paper} className={classes.paper} container spacing={3} >
+          <Grid item container direction="row" justify="flex-start" alignItems="flex-end" spacing={5} className={classes.paperInner}>
+              <Grid item>
+                  <Typography variant={"h6"}>{`売上高： ${selector.totalAmount.toLocaleString()} 円`}</Typography>
+              </Grid>
+              <Grid item>
+                  <Typography variant={"h6"}>{`消費税額： ${selector.consumptionTax.toLocaleString()} 円`}</Typography>
+              </Grid>
+              <Grid item>
+                  <Typography variant={"h6"}>{`請求額： ${Number(billingAmount).toLocaleString()} 円`}</Typography>
+              </Grid>
+              <Grid item>
+                  <Typography variant={"h6"}>{`分割回数： ${Number(selector.installmentPayment).toLocaleString()} 回`}</Typography>
+              </Grid>
+              {/* <TableBody className={classes.container}> */}
+              {Statement.map(( x, index) => <SalesStatement key={index} className={classes.statementArea} x={x} index={index} taxIncluded={taxIncluded} /> )}
+              {/* </TableBody> */}
 
- 
-          {/* <Typography>{`10%対象額： ${tax10.toLocaleString()} 円`}</Typography> */}
-          {/* <TextInput label={"金額"} fullWidth={false} required={true} value={amount} name="amount" onChange={inputAmount} type="number"/> */}
-        </div>
-        <div>
-          {/* <TextInput label={"10%対象額"} fullWidth={false} required={true} value={} name="tax10" onChange={inputTax10} type="number"/> */}
+            <Grid container direction="row" justify="center" alignItems="center">
+              <Grid item>
+                <AddCircleIcon color="primary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>plusStatement(false)}/>
+              </Grid>
+              <Grid item>
+                <RemoveCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>plusStatement(true)}/>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+        
+        <Grid item className={classes.textArea} container direction="row" justify={"flex-start"} alignItems="center">
+            <Grid item>
+              <Typography variant={"h4"}>請求</Typography>
+            </Grid>
+      　</Grid>
+      　<Grid component={Paper} className={classes.paperBilling}>
+          <PaymentEntry />
+           {/* {Statement.map(( x, index) =>{
+              return(
+                <Grid key={index} className={classes.statementArea}>
+                  <SalesStatement x={x} index={index} taxIncluded={taxIncluded} />
+                </Grid>
+              )
+            })} */}
+        </Grid>
+      </Grid>
 
-          {/* <TextInput label={"8%対象額"} fullWidth={false} required={true} value={tax08} name="tax08" onChange={inputTax08} type="number"/> */}
-
-          {/* <TextInput label={"消費税額"} fullWidth={false} required={true} value={consumptionTax} name="consumptionTax" onChange={inputConsumptionTax} type="number"/> */}
-        </div>
-        <div>
-          <TextInput label={"分割回数"} fullWidth={false} required={true} value={installmentPayment} name="installmentPayment" onChange={inputInstallmentPayment} type="number"/>
-        </div>
-      </div>
-
-      <AddCircleIcon color="primary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>plusStatement(false)}/>
-      <RemoveCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>plusStatement(true)}/>
-
-      <div className={classes.center}>
-        <MainButton label={"登録"} color="primary" onClick={submitDispatch} />
-      </div>
-      <div className={classes.center}>
-        <MainButton label={"戻る"} color="secondary" onClick={props.handleClose}/>
-      </div>
-      <Confirmation handleClose={props.handleClose} submitDispatch={submitDispatch}/>
-
+      <Grid className={classes.buttonArea}>
+        <Grid className={classes.center}>
+          <MainButton label={"登録"} color="primary" onClick={submitDispatch} />
+        </Grid>
+        <Grid className={classes.center}>
+          <MainButton label={"戻る"} color="secondary" onClick={props.handleClose}/>
+        </Grid>
+      </Grid>
+        <Confirmation handleClose={props.handleClose} submitDispatch={submitDispatch}/>
     </form>
   )
 };
@@ -157,18 +188,49 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     padding: "1rem",
     height: "auto",
-    width: "100%",
+    width: "90%",
   },
   center : {
-    margin: "0 auto",
+    margin: "1rem auto",
     textAlign: "center",
   },
   container: {
+    width: "100%",
     display : "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "start",
     alignItems : "end",
+  },
+  paper: {
+    width: "100%",
+    backgroundColor: theme.palette.grey[50],
+  },
+  paperBilling: {
+    width: "100%",
+    backgroundColor: theme.palette.grey[100],
+  },
+  paperInner: {
+    width: "100%",
+    padding: "2rem",
+  },
+  textArea: {
+    marginTop: "2rem",
+
+  },
+  statementArea: {
+    padding: "0 2rem",
+  },
+  buttonArea: {
+    margin: "2rem auto",
+    padding: "2rem", 
   },
 }));
 
 export default SalesEntry;
+
+/* <Typography>{`10%対象額： ${tax10.toLocaleString()} 円`}</Typography> */
+/* <TextInput label={"金額"} fullWidth={false} required={true} value={amount} name="amount" onChange={inputAmount} type="number"/> */
+
+/* <TextInput label={"10%対象額"} fullWidth={false} required={true} value={} name="tax10" onChange={inputTax10} type="number"/> */
+/* <TextInput label={"8%対象額"} fullWidth={false} required={true} value={tax08} name="tax08" onChange={inputTax08} type="number"/> */
+/* <TextInput label={"消費税額"} fullWidth={false} required={true} value={consumptionTax} name="consumptionTax" onChange={inputConsumptionTax} type="number"/> */

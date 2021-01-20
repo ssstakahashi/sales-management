@@ -15,18 +15,21 @@ import { selectEntity } from '../../reducks/store/fixedData';
 import { supplierDataGetOperation } from '../../reducks/supplier/operations';
 import { MainButton } from '../../components/uikit';
 import { push } from 'connected-react-router';
-import { Paper } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
   table: {
     minWidth: 650,
   },
+  tableHeader : {
+    backgroundColor: theme.palette.primary.dark,
+  },
   center : {
-    margin: "0 auto",
+    margin: "2rem auto",
     textAlign: "center",
   },
-});
+}));
 
 const Sales = () => {
   const classes = useStyles();
@@ -65,18 +68,21 @@ const Sales = () => {
     if ( !rows.length ) dispatch( salesDataGetOperation() )
   },[])
 
-
-
   return (
     <TableContainer component={Paper}>
+      <Grid>
+        <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen()}/>
+      </Grid>
       <Table className={classes.table} size="small" aria-label="a dense table">
-        <TableHead>
+        <TableHead className={classes.tableHeader}>
           <TableRow>
             <TableCell align="center">No.</TableCell>
             <TableCell align="center">売上日</TableCell>
             <TableCell align="center">取引先</TableCell>
             <TableCell align="center">件名</TableCell>
-            <TableCell align="center">売上高&nbsp;(円)</TableCell>
+            <TableCell align="right">売上高&nbsp;(円)</TableCell>
+            <TableCell align="right">消費税</TableCell>
+            <TableCell align="right">請求額&nbsp;(円)</TableCell>
             <TableCell align="center">ステータス</TableCell>
             <TableCell align="center">入金額&nbsp;(円)</TableCell>
             <TableCell align="center">残入金額&nbsp;(円)</TableCell>
@@ -92,6 +98,8 @@ const Sales = () => {
               <TableCell align="left">{supplierDisplay(row.supplierId)}</TableCell>
               <TableCell align="left">{row.salesSubject}</TableCell>
               <TableCell align="right">{row.totalAmount.toLocaleString()}</TableCell>
+              <TableCell align="right">{row.taxIncluded ? "込" : "抜"}</TableCell>
+              <TableCell align="right">{row.billingAmount && row.billingAmount.toLocaleString()}</TableCell>
               <TableCell align="right">{row.status}</TableCell>
               <TableCell align="right">{"入金額"}</TableCell>
               <TableCell align="right">{"残"}</TableCell>
@@ -101,10 +109,10 @@ const Sales = () => {
         </TableBody>
       </Table>
       <SalesDialog handleClose={handleClose} open={open}/>
-      <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen()}/>
-      <div className={classes.center}>
+
+      <Grid className={classes.center}>
         <MainButton label={"戻る"} color="secondary" onClick={()=>dispatch(push('/'))}/>
-      </div>
+      </Grid>
     </TableContainer>
   );
 }

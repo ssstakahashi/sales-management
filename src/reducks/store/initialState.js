@@ -11,7 +11,8 @@ const initialState = {
     salesDay           : "",　// 売上日
     supplierName       : "",　// 取引先名
     supplierId     　  : "",　// 取引先ID
-    totalAmount        : 0,  // 売上合計(税抜)
+    totalAmount        : 0,  // 売上合計
+    billingAmount      : 0,  // 請求合計
     salesSubject       : "",　// 件名
     salesDescription   : "",  // 摘要
     salesEntity        : "",  // 売上主体（個人事業主としてか？法人としてか？）
@@ -28,14 +29,19 @@ const initialState = {
     tax10 　　　　　　  : 0,   // 10%対象額
     tax08              : 0,   //  8%対象額
     consumptionTax     : 0,　 // 消費税額
-    installmentPayment :  1,   // 回収回数
-    depositRecord      : [{
-      plannedDepositDate   : "",  // 入金予定日(売上時点)
-      plannedDepositAmount : "",  // 入金予定額
-      actualDepositDate    : "",  // 実際入金日
-      actualDepositAmount  : "",  // 実際入金額
+    installmentPayment : 1,   // 回収回数
+    depositRecord      : [
+      // done                 : false,  // 入金済みか否か
+      // plannedDepositDate   : "",  // 入金予定日(売上時点)
+      // plannedDepositAmount : "",  // 入金予定額
+      // actualDepositDate    : "",  // 実際入金日
+      // actualDepositAmount  : "",  // 実際入金額
+      // serialPaymentNumber  :  1,
+      // docId                : "",  // 販売データID
 
-    }],   // 入金記録
+    ],   // 入金記録
+    plannedTotalAmount :  0,   // 入金予定総額
+    actualTotalAmount  :  0,   // 入金総額
     status             : "",   // 回収ステータス
     statement          : [],
   },

@@ -1,7 +1,8 @@
 import React from 'react';
 import Header from '../views/header';
 import Style from './Layout.module.scss';
-import "fontsource-roboto"
+import "fontsource-roboto";
+import './reset.scss';
 import { theme } from './theme'
 import { ThemeProvider as MaterialThemeProvider, StylesProvider} from "@material-ui/styles";
 import { ThemeProvider as StyledThemeProvider } from "styled-components";

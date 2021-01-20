@@ -1,4 +1,4 @@
-export const ConsumptionTax = ( taxIncluded, totalAmount ) => {
+export default function ConsumptionTax( taxIncluded, totalAmount ) {
   if ( taxIncluded ) {
     return parseInt( totalAmount - ( totalAmount / 1.1 ) )
   } else {

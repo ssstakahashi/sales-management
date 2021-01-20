@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 200,
+    width: 140,
   },
 }));
 
@@ -18,7 +18,7 @@ const DateInput = React.memo((props) => {
   const classes = useStyles();
 
   return (
-    // <form className={classes.container} noValidate>
+
       <TextField
         label={props.label}
         type="date"
@@ -29,7 +29,7 @@ const DateInput = React.memo((props) => {
             shrink: true,
         }}
       />
-    // </form>
+
   );
 });
 

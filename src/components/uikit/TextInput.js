@@ -4,14 +4,16 @@ import {makeStyles} from "@material-ui/styles";
 
 const useStyles = makeStyles({
     full: {
-        marginBottom: 16,
+        // marginBottom: 16,
+        width: "100%",
+        minWidth: 240,
     },
     half: {
         marginLeft: 8,
         marginRight: 8,
-        marginBottom: 16,
-        minWidth: 100,
-        width: 'calc(10% - 16px)'
+        // marginBottom: 16,
+        minWidth: 80,
+
     }
 })
 

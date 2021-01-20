@@ -14,13 +14,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const SalesDialog = (props) =>{
 
   return (
-      <Dialog open={props.open} onClose={props.handleClose} fullScreen TransitionComponent={Transition}>
-        <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+      <Dialog open={props.open} onClose={props.handleClose} fullScreen TransitionComponent={Transition} style={{width: "80%", margin: "0 auto"}}>
+        <DialogTitle>売上登録</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send updates
-            occasionally.
-          </DialogContentText>
 
             <SalesEntry handleClose={props.handleClose} />
 
