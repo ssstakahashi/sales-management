@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "個人事業主用会計システム",
+  "name": "MIERU小規模事業者会計",
   "icons": [
     {
       "src": "favicon.ico",

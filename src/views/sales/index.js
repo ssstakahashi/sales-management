@@ -92,7 +92,7 @@ const Sales = () => {
         <TableBody>
           {rows.length ?
             rows.map(( row, index) => (
-            <TableRow key={row.serialNumber} onClick={()=>handleClickOpen(row)}>
+            <TableRow key={row.serialNumber} onClick={()=>handleClickOpen(row)}draggable>
               <TableCell component="th" scope="row" align="center">{index + 1}</TableCell>
               <TableCell align="center">{row.salesDay}</TableCell>
               <TableCell align="left">{supplierDisplay(row.supplierId)}</TableCell>
