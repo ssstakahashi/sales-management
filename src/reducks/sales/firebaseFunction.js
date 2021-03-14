@@ -2,7 +2,7 @@ import { db } from "../../firebase";
 
 const salesRef = db.collection('organization')
 
-export const salesCreate = ( inputData, id, organizationId ) => {
+export const SalesCreate = ( inputData, id, organizationId ) => {
   salesRef.doc(organizationId).collection('sales').doc( id ).set( inputData,{ merge: true })
     .then(function() {
       console.log("Document successfully written!");
@@ -10,7 +10,7 @@ export const salesCreate = ( inputData, id, organizationId ) => {
 }
 
 // Firebaseからデータを取得
-export const salesDataGet = async(organizationId) => {
+export const SalesDataGet = async(organizationId) => {
   let salesData = []
   await salesRef.doc(organizationId).collection('sales').get()
     .then( querySnapshot => {
@@ -21,7 +21,7 @@ export const salesDataGet = async(organizationId) => {
   return salesData
 }
 
-export const salesDatabase = (data) => (
+export const SalesDatabase = (data) => (
   {
     createAt           : data.createAt,
     updateAt           : data.updateAt,
@@ -57,7 +57,7 @@ export const salesDatabase = (data) => (
   }
 )
 
-export const depositRecordDatabase = (data) => ({
+export const DepositRecordDatabase = (data) => ({
   serialPaymentNumber       : data.serialPaymentNumber,
   docId                     : data.docId,
   done                      : data.done,

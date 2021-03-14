@@ -7,12 +7,12 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { salesDataGetOperation, salesDialogCloseOperation, salesDialogOpenOperation } from '../../reducks/sales/operations';
+import { SalesDataGetOperation, SalesDialogCloseOperation, SalesDialogOpenOperation } from '../../reducks/sales/operations';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import SalesDialog from './SalesDialog'
 import initialState from '../../reducks/store/initialState';
 import { selectEntity } from '../../reducks/store/fixedData';
-import { supplierDataGetOperation } from '../../reducks/supplier/operations';
+import { SupplierDataGetOperation } from '../../reducks/supplier/operations';
 import { MainButton } from '../../components/uikit';
 import { push } from 'connected-react-router';
 import { Grid, Paper } from '@material-ui/core';
@@ -42,12 +42,12 @@ const Sales = () => {
 
   const handleClickOpen = (row = initialState.sales) => {
     setOpen(true)
-    dispatch( salesDialogOpenOperation(row) )
+    dispatch( SalesDialogOpenOperation(row) )
   }
 
   const handleClose = () => {
     setOpen(false)
-    dispatch( salesDialogCloseOperation() )
+    dispatch( SalesDialogCloseOperation() )
   }
 
   const entityDisplay = (value) => {
@@ -56,16 +56,16 @@ const Sales = () => {
   }
 
   const supplierDisplay = (value) => {
-    console.log(value)
+
     const Value = supplierRows.find( x => x.supplierId === value )
     return Value.supTemporaryName
   }
 
   useEffect(()=>{
-    if ( !supplierRows.length ) dispatch( supplierDataGetOperation() )
+    if ( !supplierRows.length ) dispatch( SupplierDataGetOperation() )
   },[])
   useEffect(()=>{
-    if ( !rows.length ) dispatch( salesDataGetOperation() )
+    if ( !rows.length ) dispatch( SalesDataGetOperation() )
   },[])
 
   return (

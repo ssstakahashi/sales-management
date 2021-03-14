@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { PlusPaymentStatementOperation, statementPush } from '../../reducks/sales/operations';
+import { SalesInputOperation, SalesDataGetOperation, SalesDialogCloseOperation, SalesDialogOpenOperation, StatementPush } from '../../reducks/sales/operations';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { TextInput, SelectInput } from '../../components/uikit';
 import { Grid, TableBody, TableCell, TableRow, TextField, Typography } from '@material-ui/core';
@@ -29,7 +30,7 @@ const SalesStatement = ({ x, index, taxIncluded }) => {
 
   useEffect(()=>{
       const amount = calcTotalAmount()
-      dispatch( statementPush({ statementNo: index + 1, productId, price, quantity, unit, amount}, taxIncluded))
+      dispatch( StatementPush({ statementNo: index + 1, productId, price, quantity, unit, amount}, taxIncluded))
   },[ price, quantity, taxIncluded ])
 
   function calcTotalAmount () {

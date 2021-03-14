@@ -1,9 +1,9 @@
 import * as Actions from './actions';
 import initialState from '../store/initialState';
 
-export function SupplierReducer(state = initialState.suppliers, action) {
+export function CollectionReducer(state = initialState.collections, action) {
   switch (action.type) {
-    case Actions.SUPPLIER_INPUT:
+    case Actions.COLLECTIONS_INPUT:
       return {
         ...action.payload
       }

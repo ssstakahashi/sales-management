@@ -1,13 +1,13 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { Container, Grid, TableBody, Typography } from '@material-ui/core';
+import { Grid, TableBody, Typography } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import PaymentEntryStatement from './PaymentEntryStatement';
-import { PlusPaymentStatementOperation } from '../../../reducks/sales/operations';
+import PaymentEntryStatement from './CollectionEntryStatement';
+import { PlusPaymentStatementOperation } from '../../reducks/sales/operations';
 
-const PaymentEntry = (props) => {
+export default function CollectionEntry(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const selector = useSelector( state => state);
@@ -53,8 +53,6 @@ const PaymentEntry = (props) => {
       </Grid>
     )
 }
-
-export default PaymentEntry;
 
 const useStyles = makeStyles((theme) => ({
     container: {

@@ -9,7 +9,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { supplierDataGetOperation, supplierDialogCloseOperation, supplierDialogOpenOperation } from '../../reducks/supplier/operations';
+import { SupplierDataGetOperation, SupplierDialogCloseOperation, SupplierDialogOpenOperation } from '../../reducks/supplier/operations';
 import SupplierDialog from './SupplierDialog';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import initialState from '../../reducks/store/initialState';
@@ -32,15 +32,15 @@ const Supplier = () => {
   const rows = selector.rows
 
   const handleClickOpen = (row = initialState.supplier) => {
-    dispatch( supplierDialogOpenOperation(row) )
+    dispatch( SupplierDialogOpenOperation(row) )
   }
 
   const handleClose = () => {
-    dispatch( supplierDialogCloseOperation() )
+    dispatch( SupplierDialogCloseOperation() )
   }
 
   useEffect(()=>{
-    if ( rows.length === 0 ) dispatch( supplierDataGetOperation() )
+    if ( rows.length === 0 ) dispatch( SupplierDataGetOperation() )
   },[])
 
 

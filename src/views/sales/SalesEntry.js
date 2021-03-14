@@ -1,17 +1,15 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { salesInputOperation, statementPush } from '../../reducks/sales/operations';
+import { SalesInputOperation, StatementPush } from '../../reducks/sales/operations';
 import { makeStyles } from '@material-ui/core/styles';
 import { DateInput, MainButton, TextInput, SwitchInput, SelectInput } from '../../components/uikit';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import { Grid, Paper, TableBody, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
 import SalesStatement from './SalesStatement';
 import Confirmation from './Confirmation';
 import { selectEntity } from '../../reducks/store/fixedData';
 import _ from 'lodash';
-
-import PaymentEntry from './payment/PaymentEntry';
 
 const SalesEntry = (props) => {
   const classes = useStyles();
@@ -23,10 +21,10 @@ const SalesEntry = (props) => {
   const billingAmount = selector.billingAmount
   console.log(selector)
   const [ salesDay, setSalesDay ]                     = useState(selector.salesDay)            // 売上日
-  // const [ supplierName, setSupplierName ]             = useState(selector.supplierName)                             // 取引先名
-  const [ supplierId, setSupplierId ]             = useState(selector.supplierId)                             // 取引先名
-  const [ totalAmount, setTotalAmount ]               = useState(selector.totalAmount)                             // 売上高合計
-  const [ salesEntity, setSalesEntity ]               = useState(selector.salesEntity)                             // 売上主体（個人事業主としてか？法人としてか？）
+  // const [ supplierName, setSupplierName ]             = useState(selector.supplierName)     // 取引先名
+  const [ supplierId, setSupplierId ]             = useState(selector.supplierId)              // 取引先ID
+  const [ totalAmount, setTotalAmount ]               = useState(selector.totalAmount)         // 売上高合計
+  const [ salesEntity, setSalesEntity ]               = useState(selector.salesEntity)         // 売上主体（個人事業主としてか？法人としてか？）
   const [ salesSubject, setSalesSubject ]             = useState(selector.salesSubject)        // 件名
   const [ salesDescription, setSalesDescription ]     = useState(selector.salesDescription)    // 摘要
   const [ taxIncluded, setTaxIncluded ]               = useState(selector.taxIncluded)         // 税込み＝True 税抜き=false
@@ -37,8 +35,8 @@ const SalesEntry = (props) => {
   const [ amount, setAmount ]                         = useState(selector.amount)              // 単価
   const [ tax10, setTax10 ]                           = useState(selector.tax10)               // 10%対象額
   const [ tax08, setTax08 ]                           = useState(selector.tax08)               // 8%対象額
-  const [ consumptionTax, setConsumptionTax ]         = useState(selector.consumptionTax)   // 消費税額
-  const [ installmentPayment, setInstallmentPayment ] = useState(selector.installmentPayment) // 回収回数
+  const [ consumptionTax, setConsumptionTax ]         = useState(selector.consumptionTax)      // 消費税額
+  const [ installmentPayment, setInstallmentPayment ] = useState(selector.installmentPayment)  // 回収回数
 
   const inputSalesDay            = useCallback(e => setSalesDay(e.target.value),[salesDay])
   const inputSupplierId          = useCallback(e => setSupplierId(e.target.value),[supplierId])
@@ -60,12 +58,11 @@ const SalesEntry = (props) => {
   // const inputTax10               = useCallback(e => setTax10(e.target.value),[tax10])
   // const inputTax08               = useCallback(e => setTax08(e.target.value),[tax08])
   // const inputConsumptionTax      = useCallback(e => setConsumptionTax(e.target.value),[consumptionTax])
-  const inputInstallmentPayment  = useCallback(e => setInstallmentPayment(e.target.value),[installmentPayment])
 
   const submitDispatch = () => {
     const state = { ...selector, salesDay, salesSubject, salesDescription, supplierId, salesEntity, taxIncluded, consumptionTax, installmentPayment}
     props.handleClose()
-    dispatch(salesInputOperation(state))
+    dispatch(SalesInputOperation(state))
   }
 
   const plusStatement = (remove) => {
@@ -80,9 +77,9 @@ const SalesEntry = (props) => {
       remarks     : "",
     }
     if ( !remove ) {
-      dispatch( statementPush( statement, taxIncluded, remove) )
+      dispatch( StatementPush( statement, taxIncluded, remove) )
     } else {
-      if ( Statement.length >= 2  ) dispatch( statementPush( statement, taxIncluded, remove) )
+      if ( Statement.length >= 2  ) dispatch( StatementPush( statement, taxIncluded, remove) )
     }
 
   }
@@ -150,22 +147,6 @@ const SalesEntry = (props) => {
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        
-        <Grid item className={classes.textArea} container direction="row" justify={"flex-start"} alignItems="center">
-            <Grid item>
-              <Typography variant={"h4"}>請求</Typography>
-            </Grid>
-      　</Grid>
-      　<Grid component={Paper} className={classes.paperBilling}>
-          <PaymentEntry />
-           {/* {Statement.map(( x, index) =>{
-              return(
-                <Grid key={index} className={classes.statementArea}>
-                  <SalesStatement x={x} index={index} taxIncluded={taxIncluded} />
-                </Grid>
-              )
-            })} */}
         </Grid>
       </Grid>
 

@@ -5,16 +5,18 @@ import {makeStyles} from "@material-ui/styles";
 const useStyles = makeStyles({
     full: {
         // marginBottom: 16,
-        width: "100%",
-        minWidth: 240,
+        width: "100vh",
     },
     half: {
-        marginLeft: 8,
-        marginRight: 8,
+        // marginLeft: 8,
+        // marginRight: 8,
         // marginBottom: 16,
         minWidth: 80,
-
-    }
+    },
+    default: {
+        width: "100%",
+        minWidth : 240,
+    },
 })
 
 const TextInput = React.memo(({
@@ -30,7 +32,16 @@ const TextInput = React.memo(({
     variant
 }) => {
     const classes = useStyles();
-    const textStyle = fullWidth ? classes.full : classes.half;
+    let textStyle = ""
+    if ( !fullWidth ) {
+        if ( fullWidth === "default" ) {
+            textStyle = classes.default 
+        } else {
+            textStyle = classes.half
+        }
+    } else {
+        textStyle = classes.full
+    }
 
     return (
         <TextField

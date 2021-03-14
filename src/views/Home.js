@@ -1,14 +1,14 @@
 import React,{ useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { push } from 'connected-react-router'
-import { supplierDataGetOperation } from '../reducks/supplier/operations';
+import { SupplierDataGetOperation } from '../reducks/supplier/operations';
 import { Grid } from '@material-ui/core';
 import { MainButton } from '../components/uikit';
 
 const Home = () => {
   const dispatch = useDispatch();
   useEffect(()=>{
-    dispatch( supplierDataGetOperation() )
+    dispatch( SupplierDataGetOperation() )
   },[])
 
   return (

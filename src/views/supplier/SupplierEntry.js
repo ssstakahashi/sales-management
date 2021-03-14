@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from 'connected-react-router'
-import { supplierInputOperation } from '../../reducks/supplier/operations';
+import { SupplierInputOperation } from '../../reducks/supplier/operations';
 import { makeStyles } from '@material-ui/core/styles';
 import { MainButton, TextInput, SelectInput } from '../../components/uikit';
 import { PayoutPeriodList } from '../../reducks/store/fixedData';
@@ -10,8 +9,6 @@ const SupplierEntry = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const selector = useSelector( state => state.supplier);
-
-  console.log(selector)
   
   const [ supTemporaryName, setSupTemporaryName ] = useState(selector.supTemporaryName)
   const [ supplierName,     setSupplierName ]     = useState(selector.supplierName)
@@ -48,7 +45,7 @@ const SupplierEntry = (props) => {
       supplierMobile,
       payoutPeriod,
     }
-    dispatch(supplierInputOperation(state))
+    dispatch(SupplierInputOperation(state))
   }
 
   return (

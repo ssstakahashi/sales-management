@@ -17,7 +17,7 @@ const initialState = {
     salesDescription   : "",  // 摘要
     salesEntity        : "",  // 売上主体（個人事業主としてか？法人としてか？）
     userId             : "",
-    docId              : "",
+    salesId            : "",  // salesId
     existence          : true, // 有効か否か
     taxIncluded      　: true, // 税込み＝True 税抜き=false
     productId          : "",　 // 商品ID
@@ -29,23 +29,32 @@ const initialState = {
     tax10 　　　　　　  : 0,   // 10%対象額
     tax08              : 0,   //  8%対象額
     consumptionTax     : 0,　 // 消費税額
-    installmentPayment : 1,   // 回収回数
-    depositRecord      : [
-      // done                 : false,  // 入金済みか否か
-      // plannedDepositDate   : "",  // 入金予定日(売上時点)
-      // plannedDepositAmount : "",  // 入金予定額
-      // actualDepositDate    : "",  // 実際入金日
-      // actualDepositAmount  : "",  // 実際入金額
-      // serialPaymentNumber  :  1,
-      // docId                : "",  // 販売データID
 
-    ],   // 入金記録
-    plannedTotalAmount :  0,   // 入金予定総額
-    actualTotalAmount  :  0,   // 入金総額
     status             : "",   // 回収ステータス
     statement          : [],
   },
-  supplier : {
+  collections: {
+    rows                 : [],
+
+    createAt             : "",
+    updateAt             : "",
+    installmentPayment   :  1,   // 回収回数
+    plannedTotalAmount   :  0,   // 入金予定総額
+    actualTotalAmount    :  0,   // 入金総額
+    collectionStatus     : "",
+    collectionDone       : false,  // 入金済みか否か
+    plannedDepositDate   : "",  // 入金予定日(売上時点)
+    plannedDepositAmount : "",  // 入金予定額
+    actualDepositDate    : "",  // 実際入金日
+    actualDepositAmount  : "",  // 実際入金額
+    serialPaymentNumber  :  1,
+    salesId              : "",  // 販売データID
+    collectionId         : "",  // 請求データID
+  },
+  payments: {
+    rows: [],
+  },
+  suppliers : {
     open             : false,
     rows             : [],
 
@@ -104,7 +113,17 @@ const initialState = {
     role: "",
     userId: "",
     userName: "",
-  }
+  },
+  dialogs : {
+    sales       : false,
+    collections : false,
+    payments    : false,
+    suppliers   : false,
+
+  },
+  reports : {
+
+  },
 }
 
 export default initialState;

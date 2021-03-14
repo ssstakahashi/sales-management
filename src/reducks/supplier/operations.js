@@ -1,17 +1,16 @@
 import { SupplierInputAction } from './actions';
-import { push } from 'connected-react-router';
 import initialState from '../store/initialState';
-import { supplierDataGet, supplierCreate } from './firebaseFunction';
-import { db, firebaseTimestamp } from '../../firebase';
+import { SupplierDataGet, SupplierCreate } from './firebaseFunction';
+import { db } from '../../firebase';
 import _ from 'lodash';
 
 const supplierRef = db.collection('organization')
+const timeStamp = new Date()
 
-export const supplierInputOperation = ( data ) => {
+export const SupplierInputOperation = ( data ) => {
   return async( dispatch, getState ) => {
     const state = getState()
     const organizationId = state.users.organizationId
-    const timeStamp = firebaseTimestamp.now()
     let id = "";
     if ( !data.supplierId ) {
       const ref = supplierRef.doc(organizationId).collection('supplier').doc();
@@ -31,11 +30,10 @@ export const supplierInputOperation = ( data ) => {
       supplierInCharge : data.supplierInCharge || "",
       payoutPeriod     : data.payoutPeriod || "", //回収サイクル
     }
-    supplierCreate( inputData, id, organizationId )
-    let arrayRows = await state.supplier.rows
+    SupplierCreate( inputData, id, organizationId )
+    let arrayRows = await state.suppliers.rows
     arrayRows.unshift({ ...inputData, docId : id })
     const Rows = await _.orderBy( _.uniqBy( arrayRows, 'docId'),  ['createAt'], ['desc'] )
-    console.log(Rows)
 
     dispatch( SupplierInputAction({
       ...inputData,
@@ -45,37 +43,36 @@ export const supplierInputOperation = ( data ) => {
   }
 }
 
-export const supplierDialogOpenOperation = ( row ) => {
+export const SupplierDialogOpenOperation = ( row ) => {
   return async( dispatch, getState ) => {
     const state = getState()
     row.open = true
-    row.rows = state.supplier.rows
+    row.rows = state.suppliers.rows
     dispatch( SupplierInputAction( row ) )
   }
 }
 
-export const supplierDialogCloseOperation = ( row = {} ) => {
+export const SupplierDialogCloseOperation = ( row = {} ) => {
   return async( dispatch, getState ) => {
     const state = getState()
-    row = initialState.supplier
+    row = initialState.suppliers
     row.open = false
-    row.rows = state.supplier.rows
+    row.rows = state.suppliers.rows
     dispatch( SupplierInputAction({
         ...row,
       }))
   }
 }
 
-export const supplierDataGetOperation = () => {
+export const SupplierDataGetOperation = () => {
   return async( dispatch, getState ) => {
     const state = getState()
     const organizationId = state.users.organizationId
-    const getData = await supplierDataGet(organizationId).then(async(res)=>{
-      await console.log(res)
+    const getData = await SupplierDataGet(organizationId).then(async(res)=>{
       return await res
     });
     const supplierData = await {
-        ...state.supplier,
+        ...state.suppliers,
         rows : getData,
     }
     dispatch( SupplierInputAction(supplierData) )

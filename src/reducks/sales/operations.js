@@ -1,7 +1,7 @@
 import { SalesInputAction } from './actions';
 import initialState from '../store/initialState';
-import { depositRecordDatabase, salesCreate, salesDatabase, salesDataGet } from './firebaseFunction';
-import { db, firebaseTimestamp } from '../../firebase';
+import { DepositRecordDatabase, SalesCreate, SalesDatabase, SalesDataGet } from './firebaseFunction';
+import { db } from '../../firebase';
 import _ from 'lodash';
 import { getUserId } from '../users/selectors';
 
@@ -9,15 +9,15 @@ import { ConsumptionTax, DayChangePayoutPeriod } from '../../components/function
 
 
 const salesRef = db.collection('organization')
+const timeStamp = new Date()
 
 // データをFirebaseへ登録
-export const salesInputOperation = ( data ) => {
+export const SalesInputOperation = ( data ) => {
   return async( dispatch, getState ) => {
     const state = getState()
     const organizationId = state.users.organizationId
     const serialNumber = data.serialNumber ? data.serialNumber : parseInt( state.sales.rows.length + 1 )
     const userId = getUserId(state)
-    const timeStamp = firebaseTimestamp.now()
     const statement = data.statement.map( x => x.amount !== 0 && x ).filter( x => x)
     let depositRecord = state.sales.depositRecord
     depositRecord.unshift()
@@ -55,13 +55,13 @@ export const salesInputOperation = ( data ) => {
       status             : data.status || "",   // 回収ステータス
       statement          : statement,
     }
-    const inputData = salesDatabase( _inputData )
+    const inputData = SalesDatabase( _inputData )
     let id = data.docId || "";
     if ( !data.docId ) {
       const ref = salesRef.doc(organizationId).collection('sales').doc();
       id  = ref.id
     }
-    salesCreate( inputData, id, organizationId )
+    SalesCreate( inputData, id, organizationId )
     let salesRows = state.sales.rows
     salesRows.unshift(inputData)
     salesRows = _.orderBy( _.uniqBy( salesRows, 'serialNumber' ), ['serialNumber'],['asc'])
@@ -75,11 +75,11 @@ export const salesInputOperation = ( data ) => {
 }
 
 // データをFirebaseから取得
-export const salesDataGetOperation = () => {
+export const SalesDataGetOperation = () => {
   return async( dispatch, getState ) => {
     const state = getState()
     const organizationId = state.users.organizationId
-    const getData = await salesDataGet(organizationId).then((res)=>{
+    const getData = await SalesDataGet(organizationId).then((res)=>{
       return _.orderBy( res,['serialNumber'],['asc'])
     });
     const salesData = await {
@@ -91,7 +91,7 @@ export const salesDataGetOperation = () => {
 }
 
 // 明細データを追加
-export const statementPush = ( row, taxIncluded, remove = false ) => {
+export const StatementPush = ( row, taxIncluded, remove = false ) => {
   return async( dispatch, getState ) => {
     const state = getState()
     row.statementNo = row.statementNo || state.sales.statement.length + 1
@@ -137,7 +137,7 @@ export const statementPush = ( row, taxIncluded, remove = false ) => {
 }
 
 // ダイアログをオープン
-export const salesDialogOpenOperation = ( row ) => {
+export const SalesDialogOpenOperation = ( row ) => {
   return async( dispatch, getState ) => {
     const state = getState()
     row.rows = state.sales.rows
@@ -147,7 +147,7 @@ export const salesDialogOpenOperation = ( row ) => {
 }
 
 // ダイアログをクローズ
-export const salesDialogCloseOperation = (row) => {
+export const SalesDialogCloseOperation = (row) => {
   return async( dispatch, getState ) => {
     const state = getState()
     row = initialState.sales
@@ -160,14 +160,12 @@ export const salesDialogCloseOperation = (row) => {
 export const PlusPaymentStatementOperation = ( remove = false ) => {
   return async( dispatch, getState ) => {
     const state = getState()
-    console.log(state)
-    console.log("支払い回数追加")
     // const totalAmount  =  state.sales.totalAmount// 売上合計額
     let depositRecord = state.sales.depositRecord
     const plannedDepositAmount = state.sales.billingAmount || 0
     const payoutPeriod = state.supplier.rows.find( x => x.supplierId === state.sales.supplierId ).payoutPeriod
     const plannedDepositDate = DayChangePayoutPeriod( state.sales.salesDay, payoutPeriod ) || ""
-    console.log(plannedDepositDate)
+
     const _statement = {
       serialPaymentNumber       : state.sales.depositRecord.length + 1,
       docId                     : state.sales.docId,
@@ -177,7 +175,7 @@ export const PlusPaymentStatementOperation = ( remove = false ) => {
       actualDepositDate         : "",
       actualDepositAmount       :  0,
     }
-    const statement = depositRecordDatabase( _statement )
+    const statement = DepositRecordDatabase( _statement )
     if ( !remove ) {
       await depositRecord.unshift(statement)
     } else {
@@ -200,8 +198,7 @@ export const PlusPaymentStatementOperation = ( remove = false ) => {
 export const TotalCalculationPaymentStatementOperation = ( row ) => {
   return async( dispatch, getState ) => {
     const state = getState()
-    console.log("計算回数")
-    console.log(row)
+
     // const totalAmount  =  state.sales.totalAmount// 売上合計額
     let depositRecord = state.sales.depositRecord
     const statement = {
@@ -211,7 +208,6 @@ export const TotalCalculationPaymentStatementOperation = ( row ) => {
     }
     depositRecord[row.serialPaymentNumber - 1] = statement
     // await depositRecord.unshift(statement)
-    console.log(depositRecord)
     depositRecord = await _.orderBy( _.uniqBy( depositRecord, 'serialPaymentNumber' ), ['serialPaymentNumber'],['asc'])
     const _depositRecord = depositRecord.map( x => parseInt( x.actualDepositAmount) )
     const plannedTotalAmount = _depositRecord.reduce( (accumulator, currentValue ) => {
