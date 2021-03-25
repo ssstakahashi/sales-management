@@ -65,6 +65,7 @@ export default function AccountingEntryStatement(props) {
           </Select>
       </TableCell>
       <TableCell>
+          {SupplierCreateInput()}
       </TableCell>
     </>
   )
@@ -89,6 +90,7 @@ export default function AccountingEntryStatement(props) {
           </Select>
       </TableCell>
       <TableCell>
+          {SupplierCreateInput()}
       </TableCell>
     </>
   )
@@ -96,32 +98,26 @@ export default function AccountingEntryStatement(props) {
 
     return (
       <Autocomplete
-        value={value}
+        value={supplier}
         onChange={(event, newValue) => {
           if (typeof newValue === 'string') {
-            supplier({
-              supTemporaryName: newValue,
-            });
+            setSupplier({...supplier, supTemporaryName: newValue });
           } else if (newValue && newValue.inputValue) {
             // Create a new value from the user input
-            setValue({
-              supTemporaryName: newValue.inputValue,
-            });
+            setSupplier({...supplier, supTemporaryName: newValue.inputValue });
           } else {
-            setValue(newValue);
+            setSupplier({ ...supplier, ...newValue });
           }
         }}
         filterOptions={(options, params) => {
           const filtered = filter(options, params);
-  
           // Suggest the creation of a new value
           if (params.inputValue !== '') {
             filtered.push({
               inputValue: params.inputValue,
-              title: `Add "${params.inputValue}"`,
+              supTemporaryName: `新規取引先 "${params.inputValue}"`,
             });
           }
-  
           return filtered;
         }}
         selectOnFocus
@@ -138,7 +134,7 @@ export default function AccountingEntryStatement(props) {
             return option.inputValue;
           }
           // Regular option
-          return option.supTemporaryName;
+          return option;
         }}
         renderOption={(option) => option.supTemporaryName}
         style={{ width: 300 }}

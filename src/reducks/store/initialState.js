@@ -92,7 +92,6 @@ const initialState = {
     rows: [],
   },
   suppliers : {
-    open             : false,
     rows             : [],
 
     supplierId       : "",
