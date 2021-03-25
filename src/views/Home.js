@@ -16,13 +16,16 @@ const Home = () => {
       <Grid item style={{margin: "2rem"}} />
 
       <Grid item>
+        <MainButton label={"会計登録"} color="primary" onClick={()=>dispatch(push('/accounting'))} />
+      </Grid>
+      <Grid item>
         <MainButton label={"売上登録"} color="primary" onClick={()=>dispatch(push('/sales'))} />
       </Grid>
       <Grid item>
-          <MainButton label={"取引先登録"} color="simple" onClick={()=>dispatch(push('/supplier'))} />
+          <MainButton label={"取引先登録"} color="third" onClick={()=>dispatch(push('/supplier'))} />
         </Grid>
         <Grid item>
-          <MainButton label={"商品登録"} color="simple" onClick={()=>dispatch(push('/product'))} />
+          <MainButton label={"商品登録"} color="primaryLight" onClick={()=>dispatch(push('/product'))} />
         </Grid>
         <Grid item>
           <MainButton label={"売上報告"} color="secondary" onClick={()=>dispatch(push('/sales-report'))} />

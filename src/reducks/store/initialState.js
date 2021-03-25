@@ -1,4 +1,41 @@
 const initialState = {
+  accountings : {
+    rows : [],
+    maxNumber : "", // 仕訳番号の一番大きい数字
+
+    accountingId : "",   // 会計Id
+    journalNumber : "", // 仕訳番号
+    journalDate   : "", // 仕訳日
+    createAt      : "",
+    updateAt      : "",
+    exsist        : true,
+    route         : "",
+    projectCode   : "",
+    userId        : "",
+
+    statement     : [{
+      journalCode : "", // 仕訳明細番号（journalNumberに2桁番号を付与）
+      description  : "",   // 摘要
+      debitAccount : "",  // 勘定科目（借方）
+      debitAmount : "", // 金額（借方）
+      debitTax    : "", // 税金（借方）
+      debitSupplierId : "", // 取引先Id（借方）
+      debitSupTemporaryName : "", // 取引先名（借方、暫定・短縮版）
+      debitItems : "",  // 品目（借方）
+      debitMemo : [], // メモ（借方）
+      debitDepartment : "", // 部門（借方）
+
+      creditAccount : "",  // 勘定科目（貸方）
+      creditAmount : "", // 金額（貸方）
+      creditTax    : "", // 税金（貸方）
+      creditSupplierId : "", // 取引先Id（貸方）
+      creditSupTemporaryName : "", // 取引先名（貸方、暫定・短縮版）
+      creditItems : "", // 品目（貸方）
+      creditMemo : [],  // メモ（貸方）
+      creditDepartment : "",  // 部門（貸方）
+    }]
+  },
+
   sales : {
 
     confirmationOpen : false,
@@ -115,6 +152,7 @@ const initialState = {
     userName: "",
   },
   dialogs : {
+    accountings : false,
     sales       : false,
     collections : false,
     payments    : false,
