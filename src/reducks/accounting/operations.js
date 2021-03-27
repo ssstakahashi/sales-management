@@ -64,7 +64,7 @@ export const AddStatementOperation = () => {
   return async( dispatch, getState ) => {
     const state = getState()
     const statement = state.accountings.statement
-    const addData = initialState.accountings.statement
+    const addData = initialState.accountings.statement[0]
     statement.push(addData)
     const AccountingData = await { ...state.accountings, statement }
     dispatch( AccountingInputAction(AccountingData) )
@@ -75,7 +75,17 @@ export const ReduceStatementOperation = () => {
     const state = getState()
     const statement = state.accountings.statement
     statement.pop()
-    const AccountingData = await { ...state.accountings, statement }
+    const AccountingData = { ...state.accountings, statement }
     dispatch( AccountingInputAction(AccountingData) )
   }
 }
+export const StatusChangeOperation = ( row, index ) => {
+  return async( dispatch, getState ) => {
+    const state = getState()
+    const statement = state.accountings.statement
+    statement[index] = row
+    const AccountingData = { ...state.accountings, statement }
+    dispatch( AccountingInputAction(AccountingData) )
+  }
+}
+

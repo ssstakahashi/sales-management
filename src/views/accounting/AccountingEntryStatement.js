@@ -9,14 +9,16 @@ import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete
 import initialState from '../../reducks/store/initialState';
 import { FindSupplier } from '../../components/function';
 import { SupplierFirebaseDatabase } from '../../reducks/supplier/firebaseFunction';
+import { StatusChangeOperation } from '../../reducks/accounting/operations';
 
 const filter = createFilterOptions();
 
 export default function AccountingEntryStatement(props) {
   const classes = useStyles();
-  const { journalCode, x } = props;
+  const { journalCode, x, index } = props;
   const dispatch = useDispatch();
   const selector = useSelector( state => state);
+  const accounting = selector.accountings.statement[index]
   const suppliersList = selector.suppliers.rows
 
   const [ debitAccount, setDebitAccount ] = useState(x.debitAccount)
@@ -36,36 +38,71 @@ export default function AccountingEntryStatement(props) {
   const [ creditMemo, setCreditMemo ] = useState(x.creditMemo)
   const [ creditDepartment, setCreditDepartment ] = useState(x.creditDepartment)
   const [ description, setDescription ] = useState(x.description)
-  const [ supplier, setSupplier ] = useState(FindSupplier(x.supplierId) || SupplierFirebaseDatabase(initialState.suppliers))
 
-  const inputDebitAccount = (e) => setDebitAccount(e.target.value)
-  const inputDebitAmount = (e) => setDebitAmount(e.target.value)
-  const inputDebitTax = (e) => setDebitTax(e.target.value)
-  const inputCreditAccount = (e) => setCreditAccount(e.target.value)
-  const inputCreditAmount = (e) => setCreditAmount(e.target.value)
-  const inputCreditTax = (e) => setCreditTax(e.target.value)
+  const [ debitSupplier, setDebitSupplier ] = useState(FindSupplier(x.debitSupplierId) || SupplierFirebaseDatabase(initialState.suppliers))
+  const [ creditSupplier, setCreditSupplier ] = useState(FindSupplier(x.creditSupplierId) || SupplierFirebaseDatabase(initialState.suppliers))
+
+  const inputDebitAccount = (e) => {
+    setDebitAccount(e.target.value)
+    const row = {...accounting, debitAccount : e.target.value }
+    dispatch(StatusChangeOperation( row ,index))
+  }
+  const inputDebitAmount = (e) => {
+    if ( e.target.value >= 0) {
+      setDebitAmount(e.target.value)
+      const row = {...accounting, debitAmount : e.target.value }
+      dispatch(StatusChangeOperation( row ,index))
+    }
+  }
+  const inputDebitTax = (e) => {
+    setDebitTax(e.target.value)
+    const row = {...accounting, debitTax : e.target.value }
+    dispatch(StatusChangeOperation( row ,index))
+  }
+  const inputCreditAccount = (e) => {
+    setCreditAccount(e.target.value)
+    const row = {...accounting, creditAccount : e.target.value }
+    dispatch(StatusChangeOperation( row ,index))
+  }
+  const inputCreditAmount = (e) => {
+    if ( e.target.value >= 0) {
+      setCreditAmount(e.target.value)
+      const row = {...accounting, creditAmount : e.target.value }
+      dispatch(StatusChangeOperation( row ,index))
+    }
+  }
+  const inputCreditTax = (e) => {
+    setCreditTax(e.target.value)
+    const row = {...accounting, creditTax : e.target.value }
+    dispatch(StatusChangeOperation( row ,index))
+  }
+  const inputDescription = (e) => {
+    setDescription(e.target.value)
+    const row = {...accounting, description : e.target.value }
+    dispatch(StatusChangeOperation( row ,index))
+  }
 
   const DebitArea = () => (
     <>
       <TableCell>
-          <Select label="勘定科目" onChange={inputDebitAccount} value={debitAccount}>
+          <Select label="勘定科目" onChange={inputDebitAccount} value={debitAccount} size="small">
           {AccountList.map((y)=> (
             <MenuItem key={y.id} value={y.id}>{y.name}</MenuItem>
           ))}
           </Select>
       </TableCell>
       <TableCell>
-          <TextField onChange={inputDebitAmount} value={debitAmount} variant='outlined' type='number' />
+          <TextField onChange={inputDebitAmount} value={debitAmount} variant='outlined' type='number' size="small"/>
       </TableCell>
       <TableCell>
-          <Select label="税区分" onChange={inputDebitTax} value={debitTax}>
+          <Select label="税区分" onChange={inputDebitTax} value={debitTax} size="small">
           {TaxClassificationList.map((y,index)=> (
             <MenuItem key={index} value={y}>{y}</MenuItem>
           ))}
           </Select>
       </TableCell>
       <TableCell>
-          {SupplierCreateInput()}
+          {SupplierCreateInput(debitSupplier, setDebitSupplier)}
       </TableCell>
     </>
   )
@@ -73,29 +110,53 @@ export default function AccountingEntryStatement(props) {
   const CreditArea = () => (
     <>
       <TableCell>
-          <Select label="勘定科目" onChange={inputCreditAccount} value={creditAccount}>
+          <Select label="勘定科目" onChange={inputCreditAccount} value={creditAccount} size="small">
           {AccountList.map((y)=> (
             <MenuItem key={y.id} value={y.id}>{y.name}</MenuItem>
           ))}
           </Select>
       </TableCell>
       <TableCell>
-          <TextField onChange={inputCreditAmount} value={creditAmount} variant='outlined' type='number' />
+          <TextField onChange={inputCreditAmount} value={creditAmount} variant='outlined' type='number' size="small"/>
       </TableCell>
       <TableCell>
-          <Select label="税区分" onChange={inputCreditTax} value={creditTax}>
+          <Select label="税区分" onChange={inputCreditTax} value={creditTax} size="small">
           {TaxClassificationList.map((y,index)=> (
             <MenuItem key={index} value={y}>{y}</MenuItem>
           ))}
           </Select>
       </TableCell>
       <TableCell>
-          {SupplierCreateInput()}
+          {SupplierCreateInput(creditSupplier, setCreditSupplier)}
       </TableCell>
     </>
   )
-  function SupplierCreateInput() {
-
+  const DebitSecondArea = () => (
+    <>
+    <TableCell>
+    </TableCell>
+    <TableCell>
+    </TableCell>
+    <TableCell>
+    </TableCell>
+    <TableCell>
+    </TableCell>
+    </>
+  )
+  const CreditSecondArea = () => (
+    <>
+     <TableCell>
+    </TableCell>
+     <TableCell>
+    </TableCell>
+     <TableCell>
+    </TableCell>
+     <TableCell>
+    </TableCell>
+    </>
+  )
+  
+  function SupplierCreateInput(supplier, setSupplier) {
     return (
       <Autocomplete
         value={supplier}
@@ -127,28 +188,42 @@ export default function AccountingEntryStatement(props) {
         getOptionLabel={(option) => {
           // Value selected with enter, right from the input
           if (typeof option === 'string') {
-            return option;
+            return option.supTemporaryName;
           }
           // Add "xxx" option created dynamically
           if (option.inputValue) {
             return option.inputValue;
           }
           // Regular option
-          return option;
+          return option.supTemporaryName;
         }}
         renderOption={(option) => option.supTemporaryName}
-        style={{ width: 300 }}
+        style={{ width: 100, fontSize:"0.5rem" }}
         freeSolo
+        size="small"
         renderInput={(params) => (
-          <TextField {...params} label="取引先" variant="outlined" />
+          <TextField {...params} variant="outlined" />
         )}
       />
     );
   }
   return (
-  <TableRow>
-    {DebitArea()}
-    {CreditArea()}
+  <TableRow hover>
+      <TableCell colSpan={9}>
+          <TableRow>
+              {DebitArea()}
+              {CreditArea()}
+              <TableCell rowSpan={2}>
+                <TextField value={description} variant="outlined" type="text" onChange={inputDescription}/>
+              </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell colSpan={8}>
+              {DebitSecondArea()}
+              {CreditSecondArea()}
+            </TableCell>
+          </TableRow>
+      </TableCell>
   </TableRow>
   )
 }

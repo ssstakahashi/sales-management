@@ -22,6 +22,9 @@ export default function AccountingEntry() {
   const [ journalDate, setJournalDate ] = useState(accounting.journalDate)
   const [ projectCode, setProjectCode ] = useState(accounting.projectCode)
 
+  console.log(accountingStatement)
+  console.log(accounting)
+
   useEffect(()=>{
     const first = startYear.substr( -2 )
     const max = _.maxBy(accounting.rows, 'journalNumber') || 0
@@ -44,6 +47,7 @@ export default function AccountingEntry() {
       <TableRow>
         <TableCell align="center" colSpan={4}>借方</TableCell>
         <TableCell align="center" colSpan={4}>貸方</TableCell>
+        <TableCell rowSpan={2}>摘要</TableCell>
       </TableRow>
       <TableRow>
         <TableCell align="center">勘定科目（借方）</TableCell>
@@ -54,6 +58,7 @@ export default function AccountingEntry() {
         <TableCell align="center">金額</TableCell>
         <TableCell align="center">税金</TableCell>
         <TableCell align="center">取引先</TableCell>
+        {/* <TableCell align="center">摘要</TableCell> */}
       </TableRow>
     </TableHead>
   )
@@ -124,6 +129,7 @@ export default function AccountingEntry() {
                 <AccountingEntryStatement
                   key={journalCode}
                   x={x}
+                  index={index}
                   journalCode={journalCode}
                 />
                 )
