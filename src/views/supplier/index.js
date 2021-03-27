@@ -28,10 +28,10 @@ const useStyles = makeStyles({
 const Supplier = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const selector = useSelector( state => state.supplier);
-  const rows = selector.rows
+  const selector = useSelector( state => state);
+  const rows = selector.suppliers.rows
 
-  const handleClickOpen = (row = initialState.supplier) => {
+  const handleClickOpen = (row = initialState.suppliers) => {
     dispatch( SupplierDialogOpenOperation(row) )
   }
 

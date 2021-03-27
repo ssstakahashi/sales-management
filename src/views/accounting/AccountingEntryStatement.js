@@ -16,6 +16,7 @@ const filter = createFilterOptions();
 export default function AccountingEntryStatement(props) {
   const classes = useStyles();
   const { journalCode, x, index } = props;
+  console.log(journalCode)
   const dispatch = useDispatch();
   const selector = useSelector( state => state);
   const accounting = selector.accountings.statement[index]
@@ -25,22 +26,28 @@ export default function AccountingEntryStatement(props) {
   const [ debitAmount, setDebitAmount ] = useState(x.debitAmount)
   const [ debitTax, setDebitTax ] = useState(x.debitTax)
   const [ debitSupplierId, setDebitSupplierId ] = useState(x.debitSupplierId)
-  const [ debitSupTemporaryName, setDebitSupTemporaryName ] = useState(x.debitSupTemporaryName)
-  const [ debitItems, setDebitItems ] = useState(x.debitItems)
-  const [ debitMemo, setDebitMemo ] = useState(x.debitMemo)
-  const [ debitDepartment, setDebitDepartment ] = useState(x.debitDepartment)
+
+  const [ debitItemId, setDebitItemId ] = useState(x.debitItemId)
+  const [ debitMemoId, setDebitMemoId ] = useState(x.debitMemoId)
+  const [ debitDepartmentId, setDebitDepartmentId ] = useState(x.debitDepartmentId)
   const [ creditAccount, setCreditAccount ] = useState(x.creditAccount)
   const [ creditAmount, setCreditAmount ] = useState(x.creditAmount)
   const [ creditTax, setCreditTax ] = useState(x.creditTax)
   const [ creditSupplierId, setCreditSupplierId ] = useState(x.creditSupplierId)
-  const [ creditSupTemporaryName, setCreditSupTemporaryName ] = useState(x.creditSupTemporaryName)
-  const [ creditItems, setCreditItems ] = useState(x.creditItems)
-  const [ creditMemo, setCreditMemo ] = useState(x.creditMemo)
-  const [ creditDepartment, setCreditDepartment ] = useState(x.creditDepartment)
+
+  const [ creditItemId, setCreditItemId ] = useState(x.creditItemId)
+  const [ creditMemoId, setCreditMemoId ] = useState(x.creditMemoId)
+  const [ creditDepartmentId, setCreditDepartmentId ] = useState(x.creditDepartmentId)
   const [ description, setDescription ] = useState(x.description)
 
   const [ debitSupplier, setDebitSupplier ] = useState(FindSupplier(x.debitSupplierId) || SupplierFirebaseDatabase(initialState.suppliers))
   const [ creditSupplier, setCreditSupplier ] = useState(FindSupplier(x.creditSupplierId) || SupplierFirebaseDatabase(initialState.suppliers))
+  const [ debitItem, setDebitItem ] = useState()
+  const [ creditItem, setCreditItem ] = useState()
+  const [ debitMemo, setDebitMemo ] = useState()
+  const [ creditMemo, setCreditMemo ] = useState()
+  const [ debitDepartment, setDebitDepartment ] = useState()
+  const [ creditDepartment, setCreditDepartment ] = useState()
 
   const inputDebitAccount = (e) => {
     setDebitAccount(e.target.value)
@@ -81,63 +88,80 @@ export default function AccountingEntryStatement(props) {
     const row = {...accounting, description : e.target.value }
     dispatch(StatusChangeOperation( row ,index))
   }
+  const inputOnchage = ((event, newValue, state, setState, objValue, id, setId) => {
+      const Id = newValue[id]
+      if (typeof newValue === 'string') {
+        setState({...state, [objValue]: newValue[id] });
+        setId(Id)
+      } else if (newValue && newValue.inputValue) {
+        // Create a new value from the user input
+        setState({...state, [objValue]: newValue.inputValue });
+        setId(Id)
+      } else {
+        setState({ ...state, ...newValue });
+        setId(Id)
+      }
+  })
 
   const DebitArea = () => (
     <>
-      <TableCell>
+      <TableCell size="small">
           <Select label="勘定科目" onChange={inputDebitAccount} value={debitAccount} size="small">
           {AccountList.map((y)=> (
             <MenuItem key={y.id} value={y.id}>{y.name}</MenuItem>
           ))}
           </Select>
       </TableCell>
-      <TableCell>
+      <TableCell size="small">
           <TextField onChange={inputDebitAmount} value={debitAmount} variant='outlined' type='number' size="small"/>
       </TableCell>
-      <TableCell>
+      <TableCell size="small">
           <Select label="税区分" onChange={inputDebitTax} value={debitTax} size="small">
           {TaxClassificationList.map((y,index)=> (
             <MenuItem key={index} value={y}>{y}</MenuItem>
           ))}
           </Select>
       </TableCell>
-      <TableCell>
-          {SupplierCreateInput(debitSupplier, setDebitSupplier)}
+      <TableCell size="small">
+          {DataCreateInput(debitSupplier, setDebitSupplier, suppliersList, inputOnchage, 'supTemporaryName', 'supplierId', setDebitSupplierId)}
       </TableCell>
     </>
   )
 
   const CreditArea = () => (
     <>
-      <TableCell>
+      <TableCell size="small">
           <Select label="勘定科目" onChange={inputCreditAccount} value={creditAccount} size="small">
           {AccountList.map((y)=> (
             <MenuItem key={y.id} value={y.id}>{y.name}</MenuItem>
           ))}
           </Select>
       </TableCell>
-      <TableCell>
+      <TableCell size="small">
           <TextField onChange={inputCreditAmount} value={creditAmount} variant='outlined' type='number' size="small"/>
       </TableCell>
-      <TableCell>
+      <TableCell size="small">
           <Select label="税区分" onChange={inputCreditTax} value={creditTax} size="small">
           {TaxClassificationList.map((y,index)=> (
             <MenuItem key={index} value={y}>{y}</MenuItem>
           ))}
           </Select>
       </TableCell>
-      <TableCell>
-          {SupplierCreateInput(creditSupplier, setCreditSupplier)}
+      <TableCell size="small">
+          {DataCreateInput(creditSupplier, setCreditSupplier, suppliersList, inputOnchage, 'supTemporaryName', 'supplierId', setCreditSupplierId )}
       </TableCell>
     </>
   )
   const DebitSecondArea = () => (
     <>
     <TableCell>
+    {/* {DataCreateInput(creditSupplier, setCreditSupplier, suppliersList, inputOnchage )} */}
     </TableCell>
     <TableCell>
+    {/* {DataCreateInput(creditSupplier, setCreditSupplier, suppliersList, inputOnchage )} */}
     </TableCell>
     <TableCell>
+    {/* {DataCreateInput(creditSupplier, setCreditSupplier, suppliersList, inputOnchage )} */}
     </TableCell>
     <TableCell>
     </TableCell>
@@ -146,67 +170,20 @@ export default function AccountingEntryStatement(props) {
   const CreditSecondArea = () => (
     <>
      <TableCell>
+     {/* {DataCreateInput(creditSupplier, setCreditSupplier, suppliersList, inputOnchage )} */}
     </TableCell>
      <TableCell>
+     {/* {DataCreateInput(creditSupplier, setCreditSupplier, suppliersList, inputOnchage )} */}
     </TableCell>
      <TableCell>
+     {/* {DataCreateInput(creditSupplier, setCreditSupplier, suppliersList, inputOnchage )} */}
     </TableCell>
      <TableCell>
     </TableCell>
     </>
   )
   
-  function SupplierCreateInput(supplier, setSupplier) {
-    return (
-      <Autocomplete
-        value={supplier}
-        onChange={(event, newValue) => {
-          if (typeof newValue === 'string') {
-            setSupplier({...supplier, supTemporaryName: newValue });
-          } else if (newValue && newValue.inputValue) {
-            // Create a new value from the user input
-            setSupplier({...supplier, supTemporaryName: newValue.inputValue });
-          } else {
-            setSupplier({ ...supplier, ...newValue });
-          }
-        }}
-        filterOptions={(options, params) => {
-          const filtered = filter(options, params);
-          // Suggest the creation of a new value
-          if (params.inputValue !== '') {
-            filtered.push({
-              inputValue: params.inputValue,
-              supTemporaryName: `新規取引先 "${params.inputValue}"`,
-            });
-          }
-          return filtered;
-        }}
-        selectOnFocus
-        clearOnBlur
-        handleHomeEndKeys
-        options={suppliersList}
-        getOptionLabel={(option) => {
-          // Value selected with enter, right from the input
-          if (typeof option === 'string') {
-            return option.supTemporaryName;
-          }
-          // Add "xxx" option created dynamically
-          if (option.inputValue) {
-            return option.inputValue;
-          }
-          // Regular option
-          return option.supTemporaryName;
-        }}
-        renderOption={(option) => option.supTemporaryName}
-        style={{ width: 100, fontSize:"0.5rem" }}
-        freeSolo
-        size="small"
-        renderInput={(params) => (
-          <TextField {...params} variant="outlined" />
-        )}
-      />
-    );
-  }
+  
   return (
   <TableRow hover>
       <TableCell colSpan={9}>
@@ -237,3 +214,46 @@ const useStyles = makeStyles((theme) => ({
       padding: "2rem",
     },
   }));
+
+  function DataCreateInput(state, setState, optionsList, onChange, objValue, id, setId) {
+    return (
+      <Autocomplete
+        value={state}
+        onChange={(event, newValue)=>onChange(event, newValue, state, setState, objValue, id, setId)}
+        filterOptions={(options, params) => {
+          const filtered = filter(options, params);
+          // Suggest the creation of a new value
+          if (params.inputValue !== '') {
+            filtered.push({
+              inputValue: params.inputValue,
+              supTemporaryName: `新規取引先 "${params.inputValue}"`,
+            });
+          }
+          return filtered;
+        }}
+        selectOnFocus
+        clearOnBlur
+        handleHomeEndKeys
+        options={optionsList}
+        getOptionLabel={(option) => {
+          // Value selected with enter, right from the input
+          if (typeof option === 'string') {
+            return option[objValue];
+          }
+          // Add "xxx" option created dynamically
+          if (option.inputValue) {
+            return option.inputValue;
+          }
+          // Regular option
+          return option[objValue];
+        }}
+        renderOption={(option) => option[objValue]}
+        style={{ width: 70, fontSize:"0.5rem" }}
+        freeSolo
+        size="small"
+        renderInput={(params) => (
+          <TextField {...params} variant="outlined" />
+        )}
+      />
+    );
+  }

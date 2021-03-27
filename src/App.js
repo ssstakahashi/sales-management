@@ -1,7 +1,7 @@
 import Router from './Router';
 
 function App() {
-  const ver = "0.0.20"
+  const ver = "0.0.21"
 
   console.log(ver)
   return (
