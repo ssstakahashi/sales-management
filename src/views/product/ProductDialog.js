@@ -8,13 +8,9 @@ import ProductEntry from './ProductEntry';
 const ProductDialog = (props) =>{
 
   return (
-      <Dialog open={props.open} onClose={props.handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
+      <Dialog open={props.open} onClose={props.handleClose} fullScreen>
+        <DialogTitle>商品登録</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send updates
-            occasionally.
-          </DialogContentText>
             <ProductEntry handleClose={props.handleClose}/>
         </DialogContent>
       </Dialog>

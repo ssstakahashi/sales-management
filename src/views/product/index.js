@@ -60,12 +60,19 @@ const Product = () => {
             <TableCell>No.</TableCell>
             <TableCell align="center">通称</TableCell>
             <TableCell align="center">正式名称</TableCell>
+            <TableCell align="center">販売商品</TableCell>
+            <TableCell align="center">在庫管理</TableCell>
             <TableCell align="center">仕入先</TableCell>
             <TableCell align="center">単価１</TableCell>
+            <TableCell align="center">税込１</TableCell>
             <TableCell align="center">単価２</TableCell>
+            <TableCell align="center">税込２</TableCell>
             <TableCell align="center">単価３</TableCell>
+            <TableCell align="center">税込３</TableCell>
             <TableCell align="center">単価４</TableCell>
+            <TableCell align="center">税込４</TableCell>
             <TableCell align="center">単価５</TableCell>
+            <TableCell align="center">税込５</TableCell>
             <TableCell align="center">単位</TableCell>
           </TableRow>
         </TableHead>
@@ -76,13 +83,20 @@ const Product = () => {
               <TableCell component="th" scope="row">{index + 1}</TableCell>
               <TableCell align="left">{row.proNickname}</TableCell>
               <TableCell align="left">{row.productName}</TableCell>
+              <TableCell align="center">{row.salesProduct ? "〇" : "×" }</TableCell>
+              <TableCell align="center">{row.inventryControl ? "〇" : "×" }</TableCell>
               <TableCell align="left">{row.supplierId}</TableCell>
-              <TableCell align="left">{ToLocaleString(row.unitPrice_01)}</TableCell>
-              <TableCell align="left">{ToLocaleString(row.unitPrice_02)}</TableCell>
-              <TableCell align="left">{ToLocaleString(row.unitPrice_03)}</TableCell>
-              <TableCell align="left">{ToLocaleString(row.unitPrice_04)}</TableCell>
-              <TableCell align="left">{ToLocaleString(row.unitPrice_05)}</TableCell>
-              <TableCell align="left">{row.unit}</TableCell>
+              <TableCell align="right">{ToLocaleString(row.unitPrice_01)}</TableCell>
+              <TableCell align="right">{ToLocaleString(row.unitPriceIn_01)}</TableCell>
+              <TableCell align="right">{ToLocaleString(row.unitPrice_02)}</TableCell>
+              <TableCell align="right">{ToLocaleString(row.unitPriceIn_02)}</TableCell>
+              <TableCell align="right">{ToLocaleString(row.unitPrice_03)}</TableCell>
+              <TableCell align="right">{ToLocaleString(row.unitPriceIn_03)}</TableCell>
+              <TableCell align="right">{ToLocaleString(row.unitPrice_04)}</TableCell>
+              <TableCell align="right">{ToLocaleString(row.unitPriceIn_04)}</TableCell>
+              <TableCell align="right">{ToLocaleString(row.unitPrice_05)}</TableCell>
+              <TableCell align="right">{ToLocaleString(row.unitPriceIn_05)}</TableCell>
+              <TableCell align="center">{row.unit}</TableCell>
             </TableRow>
           )) : <></>}
         </TableBody>

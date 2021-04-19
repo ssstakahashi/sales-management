@@ -10,8 +10,13 @@ import initialState from '../../reducks/store/initialState';
 import { FindSupplier } from '../../components/function';
 import { SupplierFirebaseDatabase } from '../../reducks/supplier/firebaseFunction';
 import { StatusChangeOperation } from '../../reducks/accounting/operations';
+// import styled from 'styled-components';
 
 const filter = createFilterOptions();
+
+// const SmallTableCell = styled(TableCell)`
+//   padding : 0
+// `
 
 export default function AccountingEntryStatement(props) {
   const classes = useStyles();
@@ -19,7 +24,7 @@ export default function AccountingEntryStatement(props) {
   console.log(journalCode)
   const dispatch = useDispatch();
   const selector = useSelector( state => state);
-  const accounting = selector.accountings.statement[index]
+  const accounting = selector.accountings.state.statement[index]
   const suppliersList = selector.suppliers.rows
 
   const [ debitAccount, setDebitAccount ] = useState(x.debitAccount)
@@ -122,9 +127,7 @@ export default function AccountingEntryStatement(props) {
           ))}
           </Select>
       </TableCell>
-      <TableCell size="small">
-          {DataCreateInput(debitSupplier, setDebitSupplier, suppliersList, inputOnchage, 'supTemporaryName', 'supplierId', setDebitSupplierId)}
-      </TableCell>
+
     </>
   )
 
@@ -147,13 +150,14 @@ export default function AccountingEntryStatement(props) {
           ))}
           </Select>
       </TableCell>
-      <TableCell size="small">
-          {DataCreateInput(creditSupplier, setCreditSupplier, suppliersList, inputOnchage, 'supTemporaryName', 'supplierId', setCreditSupplierId )}
-      </TableCell>
+
     </>
   )
   const DebitSecondArea = () => (
     <>
+    <TableCell size="small">
+          {DataCreateInput(debitSupplier, setDebitSupplier, suppliersList, inputOnchage, 'supTemporaryName', 'supplierId', setDebitSupplierId)}
+    </TableCell>
     <TableCell>
     {/* {DataCreateInput(creditSupplier, setCreditSupplier, suppliersList, inputOnchage )} */}
     </TableCell>
@@ -169,6 +173,9 @@ export default function AccountingEntryStatement(props) {
   )
   const CreditSecondArea = () => (
     <>
+     <TableCell size="small">
+          {DataCreateInput(creditSupplier, setCreditSupplier, suppliersList, inputOnchage, 'supTemporaryName', 'supplierId', setCreditSupplierId )}
+     </TableCell>
      <TableCell>
      {/* {DataCreateInput(creditSupplier, setCreditSupplier, suppliersList, inputOnchage )} */}
     </TableCell>
@@ -185,8 +192,8 @@ export default function AccountingEntryStatement(props) {
   
   
   return (
-  <TableRow hover>
-      <TableCell colSpan={9}>
+  <TableRow>
+      <TableCell colSpan={9} size="small">
           <TableRow>
               {DebitArea()}
               {CreditArea()}
@@ -195,7 +202,7 @@ export default function AccountingEntryStatement(props) {
               </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell colSpan={8}>
+            <TableCell colSpan={8} size="small">
               {DebitSecondArea()}
               {CreditSecondArea()}
             </TableCell>

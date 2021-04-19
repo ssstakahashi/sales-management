@@ -31,12 +31,8 @@ const Supplier = () => {
   const selector = useSelector( state => state);
   const rows = selector.suppliers.rows
 
-  const handleClickOpen = (row = initialState.suppliers) => {
+  const handleClickOpen = (row = initialState.suppliers.state) => {
     dispatch( SupplierDialogOpenOperation(row) )
-  }
-
-  const handleClose = () => {
-    dispatch( SupplierDialogCloseOperation() )
   }
 
   useEffect(()=>{
@@ -78,7 +74,7 @@ const Supplier = () => {
           ))}
         </TableBody>
       </Table>
-      <SupplierDialog handleClose={handleClose} open={selector.open}/>
+      <SupplierDialog />
       <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen()}/>
       <div className={classes.center}>
         <MainButton label={"戻る"} color="secondary" onClick={()=>dispatch(push('/'))}/>

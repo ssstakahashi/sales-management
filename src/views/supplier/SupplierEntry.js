@@ -8,17 +8,18 @@ import { PayoutPeriodList } from '../../reducks/store/fixedData';
 const SupplierEntry = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const selector = useSelector( state => state.supplier);
+  const selector = useSelector( state => state);
+  const supplier = selector.suppliers.state
   
-  const [ supTemporaryName, setSupTemporaryName ] = useState(selector.supTemporaryName)
-  const [ supplierName,     setSupplierName ]     = useState(selector.supplierName)
-  const [ supplierAddress,  setSupplierAddress ]  = useState(selector.supplierAddress)
-  const [ supplierPostCode, setSupplierPostCode ] = useState(selector.supplierPostCode)
-  const [ supplierPhone,    setSupplierPhone ]    = useState(selector.supplierPhone)
-  const [ supplierEmail,    setSupplierEmail ]    = useState(selector.supplierEmail)
-  const [ supplierInCharge, setSupplierInCharge ] = useState(selector.supplierInCharge)
-  const [ supplierMobile,   setSupplierMobile ]   = useState(selector.supplierMobile)
-  const [ payoutPeriod,     setPayoutPeriod ]     = useState(selector.payoutPeriod)
+  const [ supTemporaryName, setSupTemporaryName ] = useState(supplier.supTemporaryName)
+  const [ supplierName,     setSupplierName ]     = useState(supplier.supplierName)
+  const [ supplierAddress,  setSupplierAddress ]  = useState(supplier.supplierAddress)
+  const [ supplierPostCode, setSupplierPostCode ] = useState(supplier.supplierPostCode)
+  const [ supplierPhone,    setSupplierPhone ]    = useState(supplier.supplierPhone)
+  const [ supplierEmail,    setSupplierEmail ]    = useState(supplier.supplierEmail)
+  const [ supplierInCharge, setSupplierInCharge ] = useState(supplier.supplierInCharge)
+  const [ supplierMobile,   setSupplierMobile ]   = useState(supplier.supplierMobile)
+  const [ payoutPeriod,     setPayoutPeriod ]     = useState(supplier.payoutPeriod)
 
   const inputSupTemporaryName = useCallback((e) => setSupTemporaryName(e.target.value),[supTemporaryName])
   const inputSupplierName     = useCallback((e) => setSupplierName(e.target.value),    [supplierName])
@@ -30,11 +31,9 @@ const SupplierEntry = (props) => {
   const inputSupplierMobile   = useCallback((e) => setSupplierMobile(e.target.value),  [supplierMobile])
   const inputPayoutPeriod     = useCallback((e) => setPayoutPeriod(e.target.value),    [payoutPeriod])
 
- 
-
   const createSupplier = () => {
     const state = {
-      ...selector,
+      ...supplier,
       supTemporaryName,
       supplierName,
       supplierAddress,
@@ -163,7 +162,7 @@ const SupplierEntry = (props) => {
             onChange={inputSupplierMobile}
           />
         </div>
-        {console.log(payoutPeriod,PayoutPeriodList,)}
+ 
         <div>
           <SelectInput label={"回収サイクル"} onChange={inputPayoutPeriod} value={payoutPeriod} selectArray={PayoutPeriodList} selectValue={"id"} selectList={"title"}/>
         </div>

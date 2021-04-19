@@ -7,7 +7,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import _ from 'lodash';
 import AccountingEntryStatement from './AccountingEntryStatement'
-import { DateInput } from '../../components/uikit';
+import { DateInput, MainButton } from '../../components/uikit';
 import { AddStatementOperation, ReduceStatementOperation } from '../../reducks/accounting/operations';
 import clsx from 'clsx';
 
@@ -16,14 +16,11 @@ export default function AccountingEntry() {
   const dispatch = useDispatch();
   const selector = useSelector( state => state);
   const startYear = '2021'
-  const accounting = selector.accountings
-  const accountingStatement = selector.accountings.statement
+  const accounting = selector.accountings.state
+  const accountingStatement = selector.accountings.state.statement
   const [ journalNumber, setJournalNumber ] = useState(accounting.journalNumber)
   const [ journalDate, setJournalDate ] = useState(accounting.journalDate)
   const [ projectCode, setProjectCode ] = useState(accounting.projectCode)
-
-  console.log(accountingStatement)
-  console.log(accounting)
 
   useEffect(()=>{
     const first = startYear.substr( -2 )
@@ -45,36 +42,36 @@ export default function AccountingEntry() {
   const HeaderArea = () => (
     <TableHead>
       <TableRow>
-        <TableCell align="center" colSpan={4}>借方</TableCell>
-        <TableCell align="center" colSpan={4}>貸方</TableCell>
-        <TableCell rowSpan={2}>摘要</TableCell>
+        <TableCell align="center" colSpan={3} size="small">借方</TableCell>
+        <TableCell align="center" colSpan={3} size="small">貸方</TableCell>
+        <TableCell rowSpan={2} size="small">摘要</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell align="center">勘定科目（借方）</TableCell>
-        <TableCell align="center">金額</TableCell>
-        <TableCell align="center">税金</TableCell>
-        <TableCell align="center">取引先</TableCell>
-        <TableCell align="center">勘定科目（貸方）</TableCell>
-        <TableCell align="center">金額</TableCell>
-        <TableCell align="center">税金</TableCell>
-        <TableCell align="center">取引先</TableCell>
+        <TableCell align="center" size="small">勘定科目（借方）</TableCell>
+        <TableCell align="center" size="small">金額</TableCell>
+        <TableCell align="center" size="small">税金</TableCell>
+        {/* <TableCell align="center" size="small">取引先</TableCell> */}
+        <TableCell align="center" size="small">勘定科目（貸方）</TableCell>
+        <TableCell align="center" size="small">金額</TableCell>
+        <TableCell align="center" size="small">税金</TableCell>
+        {/* <TableCell align="center" size="small">取引先</TableCell> */}
         {/* <TableCell align="center">摘要</TableCell> */}
       </TableRow>
     </TableHead>
   )
   const FooterArea = () => (
     <TableRow>
-      <TableCell>勘定科目（借方）</TableCell>
-      <TableCell align="right">金額</TableCell>
-      <TableCell align="right">税金</TableCell>
-      <TableCell>勘定科目（貸方）</TableCell>
-      <TableCell align="right">金額</TableCell>
-      <TableCell align="right">税金</TableCell>
+      <TableCell size="small">勘定科目（借方）</TableCell>
+      <TableCell align="right" size="small">金額</TableCell>
+      <TableCell align="right" size="small">税金</TableCell>
+      <TableCell size="small">勘定科目（貸方）</TableCell>
+      <TableCell align="right" size="small">金額</TableCell>
+      <TableCell align="right" size="small">税金</TableCell>
     </TableRow>
   )
 
   const StatementAddArea = () => (
-      <Grid container direction="row" justify="center" alignItems="center">
+      <>
         <Grid item>
             <AddCircleIcon
               color="primary"
@@ -89,7 +86,7 @@ export default function AccountingEntry() {
               className={clsx(classes.iconStyle, accountingStatement.length === 1 && classes.disableColor)}
             />
         </Grid>
-      </Grid>
+      </>
   )
 
   return (
@@ -140,10 +137,19 @@ export default function AccountingEntry() {
           </TableContainer>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item container direction="row" justify="center" xs={12}>
              {StatementAddArea()}
         </Grid>
+        <Grid item container direction="row" justify="center" spacing={8}>
+          <Grid item>
+            <MainButton label={"登録"} color="primary" onClick={""} />
+          </Grid>
+          <Grid item>
+            <MainButton label={"戻る"} color="secondary" onClick={""}/>
+          </Grid>
+        </Grid>
     </Grid>
+
   </Container>
   )
 }

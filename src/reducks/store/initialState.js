@@ -2,47 +2,51 @@ const initialState = {
   accountings : {
     rows : [],
     maxNumber : "", // 仕訳番号の一番大きい数字
-
-    accountingId : "",   // 会計Id
-    journalNumber : "", // 仕訳番号
-    journalDate   : "", // 仕訳日
-    createAt      : "",
-    updateAt      : "",
-    exsist        : true,
-    route         : "",
-    projectCode   : "",
-    userId        : "",
-
-    statement     : [{
-      journalCode : "", // 仕訳明細番号（journalNumberに2桁番号を付与）
-      description  : "",   // 摘要
-      debitAccount : "",  // 勘定科目（借方）
-      debitAmount : "", // 金額（借方）
-      debitTax    : "", // 税金（借方）
-      debitSupplierId : "", // 取引先Id（借方）
-      debitSupTemporaryName : "", // 取引先名（借方、暫定・短縮版）
-      debitItems : "",  // 品目（借方）
-      debitMemo : [], // メモ（借方）
-      debitDepartment : "", // 部門（借方）
-
-      creditAccount : "",  // 勘定科目（貸方）
-      creditAmount : "", // 金額（貸方）
-      creditTax    : "", // 税金（貸方）
-      creditSupplierId : "", // 取引先Id（貸方）
-      creditSupTemporaryName : "", // 取引先名（貸方、暫定・短縮版）
-      creditItems : "", // 品目（貸方）
-      creditMemo : [],  // メモ（貸方）
-      creditDepartment : "",  // 部門（貸方）
-    }]
+    
+    state: {
+      accountingId : "",   // 会計Id
+      journalNumber : "", // 仕訳番号
+      journalDate   : "", // 仕訳日
+      createAt      : "",
+      updateAt      : "",
+      exsist        : true,
+      route         : "",
+      projectCode   : "",
+      userId        : "",
+  
+      statement     : [{
+        journalCode : "", // 仕訳明細番号（journalNumberに2桁番号を付与）
+        description  : "",   // 摘要
+        debitAccount : "",  // 勘定科目（借方）
+        debitAmount : "", // 金額（借方）
+        debitTax    : "", // 税金（借方）
+        debitSupplierId : "", // 取引先Id（借方）
+        debitSupTemporaryName : "", // 取引先名（借方、暫定・短縮版）
+        debitItems : "",  // 品目（借方）
+        debitMemo : [], // メモ（借方）
+        debitDepartment : "", // 部門（借方）
+  
+        creditAccount : "",  // 勘定科目（貸方）
+        creditAmount : "", // 金額（貸方）
+        creditTax    : "", // 税金（貸方）
+        creditSupplierId : "", // 取引先Id（貸方）
+        creditSupTemporaryName : "", // 取引先名（貸方、暫定・短縮版）
+        creditItems : "", // 品目（貸方）
+        creditMemo : [],  // メモ（貸方）
+        creditDepartment : "",  // 部門（貸方）
+      }],
+    }
   },
 
   sales : {
-
     confirmationOpen : false,
     rows             : [],
 
+    salesId            : "",  // salesId
     createAt           : "",
     updateAt           : "",
+    userId             : "",
+    
     serialNumber       : "",  // シリアルナンバー
     parentCode         : "",  // 親コード
     salesDay           : "",　// 売上日
@@ -53,8 +57,8 @@ const initialState = {
     salesSubject       : "",　// 件名
     salesDescription   : "",  // 摘要
     salesEntity        : "",  // 売上主体（個人事業主としてか？法人としてか？）
-    userId             : "",
-    salesId            : "",  // salesId
+
+
     existence          : true, // 有効か否か
     taxIncluded      　: true, // 税込み＝True 税抜き=false
     productId          : "",　 // 商品ID
@@ -67,7 +71,7 @@ const initialState = {
     tax08              : 0,   //  8%対象額
     consumptionTax     : 0,　 // 消費税額
 
-    status             : "",   // 回収ステータス
+    status             : false,   // 回収ステータス
     statement          : [],
   },
   collections: {
@@ -93,37 +97,59 @@ const initialState = {
   },
   suppliers : {
     rows             : [],
+    state            :{
+      supplierId       : "",
+      createAt         : "",
+      updateAt         : "",
+      userId           : "",
+  
+      supTemporaryName : "",
+      supplierName     : "",
+      supplierAddress  : "",
+      supplierPostCode : "",
+      supplierPhone    : "",
+      supplierEmail    : "",
+      supplierMobile   : "",
+      supplierInCharge : "",
+      payoutPeriod     : 1, //回収サイクル
+      myself           : false, // 自分の法人か否か
+      existence        : true, // 有効か否か  
+    }
 
-    supplierId       : "",
-    createAt         : "",
-    updateAt         : "",
 
-    supTemporaryName : "",
-    supplierName     : "",
-    supplierAddress  : "",
-    supplierPostCode : "",
-    supplierPhone    : "",
-    supplierEmail    : "",
-    supplierMobile   : "",
-    supplierInCharge : "",
-    payoutPeriod     : 1, //回収サイクル
-    existence        : true, // 有効か否か
   },
   products : {
     rows              : [],
 
-    productId         : "",
+    productId         : "", // docId
+    existence         : true, // 有効か否か
+    createAt          : "", // 作成日時
+    updateAt          : "", // 更新日時
+    userId             : "",
+
     productName       : "",
     proNickname       : "",
     supplierId        : "",
     supplierName      : "",
     supBranchName     : "",
-    defaultUnitPrice  : "",
+    inventoryControl  : false,
+    salesProduct      : true,
+    defaultUnitPrice  : "01",
     unitPrice_01      : "",
     unitPrice_02      : "",
     unitPrice_03      : "",
     unitPrice_04      : "",
     unitPrice_05      : "",
+    tax_01      : 10,
+    tax_02      : 10,
+    tax_03      : 10,
+    tax_04      : 10,
+    tax_05      : 10,
+    unitPriceIn_01      : "",
+    unitPriceIn_02      : "",
+    unitPriceIn_03      : "",
+    unitPriceIn_04      : "",
+    unitPriceIn_05      : "",
     unit              : "",   // 単位
     classification_01 : "",
     classification_02 : "",
@@ -135,9 +161,7 @@ const initialState = {
     classification_08 : "",
     classification_09 : "",
     classification_10 : "",
-    existence         : true, // 有効か否か
-    createAt          : "", // 作成日時
-    updateAt          : "", // 更新日時
+
   },
   users : {
 

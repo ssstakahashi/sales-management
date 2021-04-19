@@ -11,7 +11,7 @@ import { SalesDataGetOperation, SalesDialogCloseOperation, SalesDialogOpenOperat
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import SalesDialog from './SalesDialog'
 import initialState from '../../reducks/store/initialState';
-import { selectEntity } from '../../reducks/store/fixedData';
+
 import { SupplierDataGetOperation } from '../../reducks/supplier/operations';
 import { MainButton } from '../../components/uikit';
 import { push } from 'connected-react-router';
@@ -35,10 +35,12 @@ const Sales = () => {
   const classes = useStyles();
   const [ open, setOpen ] = useState(false)
   const dispatch = useDispatch();
-  const Selector = useSelector( state => state);
-  const selector = Selector.sales
-  const supplierRows = Selector.supplier.rows || []
-  const rows = selector.rows
+  const selector = useSelector( state => state);
+  const sales = selector.sales
+  const supplierRows = selector.suppliers.rows || []
+  const rows = sales.rows
+
+  console.log(supplierRows)
 
   const handleClickOpen = (row = initialState.sales) => {
     setOpen(true)
@@ -50,20 +52,16 @@ const Sales = () => {
     dispatch( SalesDialogCloseOperation() )
   }
 
-  const entityDisplay = (value) => {
-    const Value = selectEntity.find( x => x.id === value )
-    return Value ? Value.name : "高橋企画"
-  }
-
   const supplierDisplay = (value) => {
-
     const Value = supplierRows.find( x => x.supplierId === value )
-    return Value.supTemporaryName
+    return Value ? Value.supTemporaryName : ""
   }
+
 
   useEffect(()=>{
     if ( !supplierRows.length ) dispatch( SupplierDataGetOperation() )
   },[])
+
   useEffect(()=>{
     if ( !rows.length ) dispatch( SalesDataGetOperation() )
   },[])
@@ -73,7 +71,7 @@ const Sales = () => {
       <Grid>
         <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen()}/>
       </Grid>
-      <Table className={classes.table} size="small" aria-label="a dense table">
+      <Table className={classes.table} size="small">
         <TableHead className={classes.tableHeader}>
           <TableRow>
             <TableCell align="center">No.</TableCell>
@@ -103,7 +101,7 @@ const Sales = () => {
               <TableCell align="right">{row.status}</TableCell>
               <TableCell align="right">{"入金額"}</TableCell>
               <TableCell align="right">{"残"}</TableCell>
-              <TableCell align="left">{entityDisplay(row.salesEntity)}</TableCell>
+              <TableCell align="left">{supplierDisplay(row.salesEntity)}</TableCell>
             </TableRow>
           )) : <></>}
         </TableBody>

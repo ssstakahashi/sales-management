@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SalesInputOperation, SalesDataGetOperation, SalesDialogCloseOperation, SalesDialogOpenOperation, StatementPush } from '../../reducks/sales/operations';
 
@@ -7,26 +7,29 @@ import { TextInput, SelectInput } from '../../components/uikit';
 import { Grid, TableBody, TableCell, TableRow, TextField, Typography } from '@material-ui/core';
 import { selectUnit } from '../../reducks/store/fixedData';
 import { productDataGetOperation } from '../../reducks/product/operations';
+import ArraySelectInput from '../../components/uikit/ArraySelectInput';
 
 
 const SalesStatement = ({ x, index, taxIncluded }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const selector = useSelector( state => state);
-  const productRows = selector.products.rows
+  const productRows = useMemo(()=>selector.products.rows.filter( x => x.salesProduct),[])
 
   const [ productId, setProductId ] = useState(x.productId)         // 商品ID
   const [ price, setPrice ]         = useState(x.price)               // 単価
   const [ quantity, setQuantity ]   = useState(x.quantity)            // 数量
   const [ unit, setUnit ]           = useState(x.unit)                // 単価
   const [ amount, setAmount ]       = useState(x.amount)              // 金額
+  const [ billing, setBilling ]       = useState(x.billing)           // 請求額
+  const [ taxAmount, setTaxAmount ]       = useState(x.taxAmount)     // 税額
   const [ remarks, setRemarks ]     = useState(x.remarks)             // 備考
   
-  const inputProductId         = useCallback(e => setProductId(e.target.value),[productId])
-  const inputPrice             = useCallback(e => setPrice(parseInt(e.target.value) ),[price])
-  const inputQuantity          = useCallback(e => setQuantity(parseInt(e.target.value)),[quantity])
-  const inputUnit              = useCallback(e => setUnit(e.target.value),[unit])
-  const inputRemarks           = useCallback(e => setRemarks(e.target.value),[remarks])
+  const inputProductId         = useCallback(e => setProductId(e.target.value),[])
+  const inputPrice             = useCallback(e => setPrice(parseInt(e.target.value) ),[])
+  const inputQuantity          = useCallback(e => setQuantity(parseInt(e.target.value)),[])
+  const inputUnit              = useCallback(e => setUnit(e.target.value),[])
+  const inputRemarks           = useCallback(e => setRemarks(e.target.value),[])
 
   useEffect(()=>{
       const amount = calcTotalAmount()
@@ -46,16 +49,32 @@ const SalesStatement = ({ x, index, taxIncluded }) => {
 
   useEffect(()=>{
     if (productId && !price) {
-      const selectProduct = productRows.find( x => x.productId === productId)
+      const selectProduct = findProductId(productId)
       setPrice( parseInt(selectProduct[ selectProduct.defaultUnitPrice ]) )
       setUnit(selectProduct.unit)
       setQuantity(1)
     }
   },[productId])
 
-  // useEffect(()=>{
-  //   dispatch( PlusPaymentStatementOperation() )
-  // },[])
+  useEffect(()=>{
+    if (productId) {
+      const selectProduct = findProductId(productId)
+      if (taxIncluded) {
+        setPrice(selectProduct[`unitPriceIn_${selectProduct.defaultUnitPrice}`])
+        setUnit(selectProduct.unit)
+        setQuantity(1)
+      } else {
+        console.log("税抜き")
+        setPrice(selectProduct[`unitPrice_${selectProduct.defaultUnitPrice}`])
+        setUnit(selectProduct.unit)
+        setQuantity(1)
+      }
+    }
+  },[productId,taxIncluded])
+
+  function findProductId(Id) {
+    return productRows.find( x => x.productId === Id)
+  }
 
 
   return (
@@ -71,19 +90,19 @@ const SalesStatement = ({ x, index, taxIncluded }) => {
             />
           </TableCell>
           <TableCell className={classes.shortRow}>
-            <TextInput label={"単価"} fullWidth={false} required={false} value={price} name="price" onChange={inputPrice} type="number"/>
+            <TextInput label={"単価"} styleClass={false}  value={price} name="price" onChange={inputPrice} type="number"/>
           </TableCell>
           <TableCell className={classes.shortRow}>
-            <TextInput label={"数量"} fullWidth={false} required={false} value={quantity} name="quantity" onChange={inputQuantity} type="number"/>
+            <TextInput label={"数量"} styleClass={false} value={quantity} name="quantity" onChange={inputQuantity} type="number"/>
           </TableCell>
           <TableCell className={classes.shortRow}>
-            <SelectInput label={"単位"} value={unit} selectArray={selectUnit} selectValue={"id"} selectList={"name"} onChange={inputUnit} styles={true}/>
+            <ArraySelectInput label={"単位"} value={unit} selectArray={selectUnit} onChange={inputUnit} styles={true}/>
           </TableCell>
           <TableCell className={classes.shortNumberRow}>
-            <Typography>{`金額： ${amount.toLocaleString()} 円`}</Typography>
+            <Typography>{amount? `${amount.toLocaleString()} 円`: "" }</Typography>
           </TableCell>
-          <TableCell className={classes.longRow}>
-          　<TextField label={"備考"} value={remarks}  onChange={inputRemarks} type="text" className={classes.remarks}/>
+          <TableCell className={classes.longAutoRow}>
+          　<TextField label={"備考"} value={remarks}  onChange={inputRemarks} type="text" className={classes.remarks} variant="outlined"/>
           </TableCell>
         </TableRow>
   
@@ -104,7 +123,6 @@ const useStyles = makeStyles((theme) => ({
       position: "relative",
       height: "50px",
       width: "250px",
-
     },
     underLIneText: {
         position: "absolute",
@@ -117,12 +135,15 @@ const useStyles = makeStyles((theme) => ({
       margin: 0,
       border: "0px none",
       textAlign: "center",
+      padding: "0 1rem",
     },
     shortRow: {
       width: "5rem",
       margin: 0,
       border: "0px none",
       textAlign: "center",
+      padding: "0 1rem",
+
     },
     shortNumberRow: {
       width: "10rem",
@@ -130,13 +151,24 @@ const useStyles = makeStyles((theme) => ({
       // padding: 0,
       border: "0px none",
       textAlign: "center",
+      padding: "0 1rem",
+
     },
     longRow: {
-      minWidth: "15rem",
+      width: "15rem",
       margin: 0,
       border: "0px none",
+      padding: "0 1rem",
+
+    },
+    longAutoRow: {
+      width: "100%",
+      margin: 0,
+      border: "0px none",
+      padding: "0 1rem",
+
     },
     remarks: {
-      minWidth: "10rem",
+      width: "100%",
     },
   }));

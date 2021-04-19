@@ -15,14 +15,14 @@ const timeStamp = new Date()
 export const SalesInputOperation = ( data ) => {
   return async( dispatch, getState ) => {
     const state = getState()
+    let arrayRows = state.sales.rows
     const organizationId = state.users.organizationId
     const serialNumber = data.serialNumber ? data.serialNumber : parseInt( state.sales.rows.length + 1 )
     const userId = getUserId(state)
-    const statement = data.statement.map( x => x.amount !== 0 && x ).filter( x => x)
-    let depositRecord = state.sales.depositRecord
-    depositRecord.unshift()
+    const statement = data.statement.map( x => x.amount !== 0 && x ).filter( x => x )
+
     // salesRows = _.orderBy( _.uniqBy( salesRows, 'serialNumber' ), ['serialNumber'],['asc'])
-    const _inputData = {
+    const inputData = {
       createAt           : data.createAt ? data.createAt : timeStamp,
       updateAt           : timeStamp,
       serialNumber       : serialNumber,  // シリアルナンバー
@@ -36,38 +36,36 @@ export const SalesInputOperation = ( data ) => {
       salesDescription   : data.salesDescription,  // 摘要
       salesEntity        : data.salesEntity,  // 売上主体（個人事業主としてか？法人としてか？）
       userId             : userId,
-      docId              : data.docId,
+      salesId            : data.salesId,
       existence          : true, // 有効か否か
       taxIncluded      　: data.taxIncluded, // 税込み＝True 税抜き=false
 
       // tax10 　　　　　　  : data.tax10,   // 10%対象額
       // tax08              : data.tax08,   //  8%対象額
       consumptionTax     : state.sales.consumptionTax,　 // 消費税額
-      installmentPayment : data.installmentPayment,   // 回収回数
-      depositRecord      : [
-        // {
-        // plannedDepositDate   : "",  // 入金予定日(売上時点)
-        // plannedDepositAmount : "",  // 入金予定額
-        // actualDepositDate    : "",  // 実際入金日
-        // actualDepositAmount  : "",  // 実際入金額
-      // }
-      ],   // 入金記録
-      status             : data.status || "",   // 回収ステータス
+
+      status             : data.status || false,   // 回収ステータス
       statement          : statement,
     }
-    const inputData = SalesDatabase( _inputData )
-    let id = data.docId || "";
-    if ( !data.docId ) {
+
+    let id = data.salesId || null;
+    if ( !data.salesId ) {
+      // データの新規作成
       const ref = salesRef.doc(organizationId).collection('sales').doc();
       id  = ref.id
+      arrayRows.unshift({ ...inputData, salesId : id })
+    } else {
+      // データの更新
+      const arrayIndex = _.findIndex( arrayRows, ['salesId', data.salesId]);
+      arrayRows.splice( arrayIndex, 1, inputData)
+      id = data.salesId
     }
+
     SalesCreate( inputData, id, organizationId )
-    let salesRows = state.sales.rows
-    salesRows.unshift(inputData)
-    salesRows = _.orderBy( _.uniqBy( salesRows, 'serialNumber' ), ['serialNumber'],['asc'])
+
     const nextData = {
       ...inputData,
-      rows             : salesRows,
+      rows             : arrayRows,
       confirmationOpen : false,
     }
     dispatch( SalesInputAction( nextData ) )
@@ -161,38 +159,37 @@ export const PlusPaymentStatementOperation = ( remove = false ) => {
   return async( dispatch, getState ) => {
     const state = getState()
     // const totalAmount  =  state.sales.totalAmount// 売上合計額
-    let depositRecord = state.sales.depositRecord
-    const plannedDepositAmount = state.sales.billingAmount || 0
-    const payoutPeriod = state.supplier.rows.find( x => x.supplierId === state.sales.supplierId ).payoutPeriod
+    let statementRecord = state.sales.statement
     const plannedDepositDate = DayChangePayoutPeriod( state.sales.salesDay, payoutPeriod ) || ""
-
-    const _statement = {
-      serialPaymentNumber       : state.sales.depositRecord.length + 1,
-      docId                     : state.sales.docId,
-      done                      : false,
-      plannedDepositDate        : plannedDepositDate,
-      plannedDepositAmount      : plannedDepositAmount,
-      actualDepositDate         : "",
-      actualDepositAmount       :  0,
-    }
-    const statement = DepositRecordDatabase( _statement )
+    const plannedDepositAmount = state.sales.billingAmount || 0
+    const payoutPeriod = state.suppliers.rows.find( x => x.supplierId === state.sales.supplierId ).payoutPeriod
+    const serialPaymentNumber = state.sales.statement.length + 1
+    const statement = DepositRecordDatabase({
+      serialPaymentNumber,
+      salesId               : state.sales.salesId,
+      done                  : false,
+      plannedDepositDate    : plannedDepositDate,
+      plannedDepositAmount  : plannedDepositAmount,
+      actualDepositDate     : "",
+      actualDepositAmount   : 0,
+    })
     if ( !remove ) {
-      await depositRecord.unshift(statement)
+      await statementRecord.unshift(statement)
     } else {
-      await depositRecord.pop()
+      await statementRecord.pop()
     }
-    depositRecord = await _.orderBy( _.uniqBy( depositRecord, 'serialPaymentNumber' ), ['serialPaymentNumber'],['asc'])
+    statementRecord = await _.orderBy( _.uniqBy( statementRecord, 'serialPaymentNumber' ), ['serialPaymentNumber'],['asc'])
 
-    const _depositRecord = depositRecord.map( x =>  parseInt(x.actualDepositAmount) )
-    const plannedTotalAmount = _depositRecord.reduce( (accumulator, currentValue ) => {
+    statementRecord = statementRecord.map( x =>  parseInt(x.actualDepositAmount) )
+    const plannedTotalAmount = statementRecord.reduce( (accumulator, currentValue ) => {
       return accumulator + currentValue  // 一部未回収
     });
-    const actualTotalAmount = _depositRecord.reduce( (accumulator, currentValue ) => {
+    const actualTotalAmount = statementRecord.reduce( (accumulator, currentValue ) => {
       return accumulator + currentValue  // 一部未回収
     });
-    const installmentPayment = _depositRecord.length
+    const installmentPayment = statementRecord.length
     // if ( totalAmount === actualTotalAmount ) { done = true }
-    dispatch( SalesInputAction({ ...state.sales, plannedTotalAmount, actualTotalAmount, depositRecord, installmentPayment }) )
+    dispatch( SalesInputAction({ ...state.sales, plannedTotalAmount, actualTotalAmount, statementRecord, installmentPayment }) )
   }
 }
 export const TotalCalculationPaymentStatementOperation = ( row ) => {

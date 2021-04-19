@@ -38,7 +38,7 @@ const Accounting = () => {
   const selector = useSelector( state => state);
   const rows = selector.accountings.rows
 
-  const handleClickOpen = (row) => {
+  const handleClickOpen = (row = initialState.accountings.state) => {
     dispatch(AccountingDialogOpenOperation(row))
   }
 
@@ -52,7 +52,7 @@ const Accounting = () => {
   return (
     <TableContainer component={Paper}>
       <Grid>
-        <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen()}/>
+        <AddCircleIcon color="secondary" style={{ fontSize:"3rem", margin: "1rem 2rem"}} onClick={()=>handleClickOpen(null)}/>
       </Grid>
       <Table className={classes.table} size="small" aria-label="a dense table">
         <TableHead className={classes.tableHeader}>

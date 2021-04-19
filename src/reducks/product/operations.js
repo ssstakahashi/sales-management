@@ -1,60 +1,44 @@
 import { ProductInputAction } from './actions';
 import initialState from '../store/initialState';
-import { productDataGet, productCreate } from './firebaseFunction';
+import { productDataGet, productCreate, ProductDatabase } from './firebaseFunction';
 import { db, firebaseTimestamp } from '../../firebase';
 import _ from 'lodash';
+import { getUserId } from '../users/selectors';
 
 const productRef = db.collection('organization')
+const timeStamp = firebaseTimestamp.now()
 
 export const productInputOperation = ( data ) => {
   return async( dispatch, getState ) => {
-    console.log(data)
     const state = getState()
+    let arrayRows = state.products.rows
     const organizationId = state.users.organizationId
-    const timeStamp = firebaseTimestamp.now()
+    const userId = getUserId(state)
     let id = "";
+    let inputData = {
+      ...ProductDatabase(data),
+      productId  : data.productId || id,
+      existence  : true, // 有効か否か
+      createAt   : data.createAt ? data.createAt : timeStamp,
+      updateAt   : timeStamp,
+      userId,
+    }
     if ( !data.productId ) {
+      // データの新規作成
       const ref = productRef.doc(organizationId).collection('products').doc();
       id  = ref.id
+      inputData = { ...inputData, productId : id }
+      arrayRows.unshift(inputData)
+    } else {
+      // データの更新
+      id = data.productId
+      const arrayIndex = _.findIndex( arrayRows, ['productId', id ]);
+      arrayRows.splice( arrayIndex, 1, inputData)
     }
-    const inputData = {
-      productId         : data.productId || id,
-      productName       : data.productName,
-      proNickname       : data.proNickname,
-      supplierId        : data.supplierId || "",
-      supplierName      : "",
-      supBranchName     : "",
-      defaultUnitPrice  : data.defaultUnitPrice,
-      unitPrice_01      : data.unitPrice_01,
-      unitPrice_02      : data.unitPrice_02,
-      unitPrice_03      : data.unitPrice_03,
-      unitPrice_04      : data.unitPrice_04,
-      unitPrice_05      : data.unitPrice_05,
-      unit              : data.unit,
-      classification_01 : "",
-      classification_02 : "",
-      classification_03 : "",
-      classification_04 : "",
-      classification_05 : "",
-      classification_06 : "",
-      classification_07 : "",
-      classification_08 : "",
-      classification_09 : "",
-      classification_10 : "",
-      existence         : true, // 有効か否か
 
-      createAt         : data.createAt ? data.createAt : timeStamp,
-      updateAt         : timeStamp,
-    }
     productCreate( inputData, id, organizationId )
-    let arrayRows = await data.rows
-    arrayRows.unshift({ ...inputData, docId : id })
-    const Rows = await _.orderBy( _.uniqBy( arrayRows, 'docId'),  ['createAt'], ['desc'] )
-
-    dispatch( ProductInputAction({
-      ...inputData,
-      rows : Rows,
-    }))
+    arrayRows = _.orderBy( arrayRows, ['createAt'], ['desc'] )
+    dispatch( ProductInputAction({ ...inputData, rows : arrayRows, }) )
   }
 }
 

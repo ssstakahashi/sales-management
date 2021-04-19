@@ -14,11 +14,13 @@ export const PayoutPeriodList = [
 ]
 
 export const selectUnit = [
-  { id: "001", name: "人月" }, 
-  { id: "002", name: "時間" }, 
-  { id: "003", name: "件"   },
+  "人月", "時間", "件",
 ]
 
 export const monthlyDay = [
   31,28,31,30,31,30,31,31,30,31,30,31
+]
+
+export const taxRateList = [
+  0, 8, 10
 ]

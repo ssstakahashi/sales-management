@@ -36,15 +36,15 @@ export const SalesDatabase = (data) => (
     salesDescription   : data.salesDescription,  // 摘要
     salesEntity        : data.salesEntity,  // 売上主体（個人事業主としてか？法人としてか？）
     userId             : data.userId,
-    docId              : data.docId,
-    existence          : data.true, // 有効か否か
+    salesId            : data.salesId,
+    existence          : data.existence, // 有効か否か
     taxIncluded      　: data.taxIncluded, // 税込み＝True 税抜き=false
 
     // tax10 　　　　　　  : data.tax10,   // 10%対象額
     // tax08              : data.tax08,   //  8%対象額
     consumptionTax     : data.consumptionTax,　 // 消費税額
-    installmentPayment : data.installmentPayment,   // 回収回数
-    depositRecord      : data.depositRecord,
+
+
       // {
       // plannedDepositDate   : "",  // 入金予定日(売上時点)
       // plannedDepositAmount : "",  // 入金予定額
@@ -59,10 +59,10 @@ export const SalesDatabase = (data) => (
 
 export const DepositRecordDatabase = (data) => ({
   serialPaymentNumber       : data.serialPaymentNumber,
-  docId                     : data.docId,
-  done                      : data.done,
-  plannedDepositDate        : data.plannedDepositDate,
-  plannedDepositAmount      : data.plannedDepositAmount,
-  actualDepositDate         : data.actualDepositDate,
-  actualDepositAmount       : data.actualDepositAmount,
+  salesId                   : data.salesId,
+  done                      : data.done || false,
+  plannedDepositDate        : data.plannedDepositDate || "",
+  plannedDepositAmount      : data.plannedDepositAmount || 0,
+  actualDepositDate         : data.actualDepositDate || "",
+  actualDepositAmount       : data.actualDepositAmount || 0,
 })

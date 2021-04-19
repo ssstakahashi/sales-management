@@ -24,6 +24,7 @@ export const SupplierFirebaseDatabase = (x) => ({
     supplierId       : x.supplierId,
     createAt         : x.createAt,
     updateAt         : x.updateAt,
+    userId           : x.userId,
 
     supTemporaryName : x.supTemporaryName,
     supplierName     : x.supplierName,
@@ -34,5 +35,6 @@ export const SupplierFirebaseDatabase = (x) => ({
     supplierMobile   : x.supplierMobile,
     supplierInCharge : x.supplierInCharge,
     payoutPeriod     : x.payoutPeriod, //回収サイクル
+    myself           : x.myself, // 自分の法人か否か
     existence        : x.existence, // 有効か否か
 })
